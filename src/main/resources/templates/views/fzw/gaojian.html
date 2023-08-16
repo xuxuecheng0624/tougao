@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <meta charset="utf-8">
+  <title>稿件列表</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+
+
+  
+
+    <!-- 内容主体区域 -->
+    <div style="padding: 0px 20px 30px 30px;" c>
+      <div class="gjlb_tit_top"><span>稿件列表</span></div>
+
+        <div class="demoTable gjlb_con_wai layui-form" lay-filter="form-search">
+        <div class="gjlb_con_left">
+          标题
+          <div class="layui-inline">
+            <input class="layui-input gjlb_input_one" name="qTitle" id="qTitle" autocomplete="off">
+          </div>
+          作者
+          <div class="layui-inline">
+            <input class="layui-input gjlb_input_one"  name="qUserName" id="qUserName" autocomplete="off">
+          </div>
+          状态
+          <div class="layui-inline">
+            <select name="qStatus" id="qStatus">
+              <option value=""></option>
+              <option value="0">草稿箱</option>
+              <option value="1">推送审核</option>
+              <option value="2">已审核</option>
+              <option value="3">驳回</option>
+            </select>
+          </div>
+          时间
+          <div class="layui-inline">
+             <input type="text" name="qCreateTime" id="qCreateTime"  placeholder="" autocomplete="off" readonly class="layui-input gjlb_input_one gjb_bbtim">
+          </div>
+          投稿栏目
+          <div class="layui-inline" id="select">
+            <div class="layui-input-inline" >
+              <select name="qChannel" id="qChannel"  lay-search="">
+                <option value=""></option>
+              </select>
+            </div>
+          </div>
+          <button class="layui-btn gjlb_button_one" lay-submit lay-filter="btn-search" >检索</button>
+        </div>
+
+      </div>
+
+      <div class="demoTable gjlb_con_wai layui-form" lay-filter="form-search">
+        <div class="gjlb_con_right" style="float:left">
+          <button class="layui-btn gjlb_button_two" id="save" data-type="add">新增</button>
+          <button class="layui-btn gjlb_button_two" id="export" data-type="reload">导出</button>
+            <button class="layui-btn gjlb_button_two" id="delete" data-type="delete">删除</button>
+        </div>
+      </div>
+
+    	<table class="layui-hide" id="test" lay-filter="test"></table>
+ 
+
+      <script type="text/html" id="barDemo" lay-filter="barDemo">
+        <shiro:hasRole name="管理员">
+          {{#  if(d.status == "0"){ }}
+              <a lay-event="edit" class="gjlb_a_butt" >编辑</a>
+          {{#} else if (d.status == "1") { }}
+              <a lay-event="review" class="gjlb_a_butt" >审核</a>
+          {{#} else if (d.status == "3") { }}
+            <a lay-event="review" class="gjlb_a_butt" >审核</a>
+          {{# } }}
+        </shiro:hasRole>
+        <shiro:hasRole name="用户">
+          {{#  if(d.status == "0"){ }}
+              <a class="gjlb_a_butt" lay-event="edit" >编辑</a>
+          {{# } }}
+        </shiro:hasRole>
+        <a lay-event="details" class="gjlb_a_butt" >查看</a>
+        <a class="gjlb_a_butt" lay-event="delete" >删除</a>
+        {{#  if(d.status == "3"){ }}
+            <a class="gjlb_a_butt" lay-event="edit" >编辑</a>
+            <a class="gjlb_a_butt" lay-event="views" >意见</a>
+        {{# } }}
+      </script>
+      <script type="text/html" id="temp_img">
+        <img class="ti_img_sty" src="{{d.imgUrl}}" >
+      </script>
+      <script type="text/html" id="temp_fujian">
+        <a  target="_blank" lay-event="fujian"><img th:src="@{/layuiadmin/layui/images/htxt_daochu6.png}"></a>
+      </script>
+
+    </div>
+
+  
+</div>
+
+<script th:src="@{layuiadmin/layui/layui.js}"></script>
+<script>
+    const baseUrl = "[[${#servletContext.contextPath}]]";
+</script>
+<script  th:inline="none">
+layui.use(['layer', 'form', 'table', 'laydate'], function(){
+    var $ = layui.$  //JQuery
+        ,layer = layui.layer
+        ,form = layui.form
+        ,table = layui.table
+        ,laydate = layui.laydate;
+
+
+    function getRootPath() {
+        var pathName = window.location.pathname.substring(1);
+        var webName = pathName == '' ? '' : pathName.substring(0, pathName.indexOf('/'));
+        return window.location.protocol + '//' + window.location.host + '/';
+    }
+
+    //日期
+    laydate.render({
+        elem: '#qCreateTime'
+        ,type: 'date'
+    });
+
+
+    var qTitle = $.trim($("#qTitle").val());
+    var qUserName = $.trim($("#qUserName").val());
+    var qCreateTime = $.trim($("#qCreateTime").val());
+    var qStatus = $.trim($("#qStatus").val());
+    var qChannel = $.trim($("#qChannel").val());
+
+    var queryParams = {
+        "qTitle" : qTitle,
+        "qUserName":qUserName,
+        "qCreateTime":qCreateTime,
+        "qStatus":qStatus,
+        "qChannel":qChannel
+    };
+
+    var location = (window.location+'').split('/');
+    var basePath = location[0]+'//'+location[2];
+  table.render({
+    elem: '#test'
+    ,url:baseUrl+'/doc/list-page'
+    ,where: queryParams
+    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+    ,cols: [[
+          {field:'id',type:"checkbox"}
+      ,{field:'id', title: '序号', type:"numbers",sort: true, width:80, align: 'center'}
+      ,{title: '图片', width:100, templet: '#temp_img', field: 'imagesAddress' , align: 'center',templet:function (d) {
+                  if (d.imagesName === "") {
+                      return "暂无图片"
+                  } else {
+                    return "<img src='"+baseUrl+"/doc/showImg?imgUrl="+d.imagesName.split(';')[0]+"' alt='暂无图片'>";
+                  }
+              }} //width 支持：数字、百分比和不填写。你还可以通过 minWidth 参数局部定义当前单元格的最小宽度，layui 2.2.1 新增
+      ,{field:'title', title: '标题', align: 'center'}
+      ,{field:'channel', title: '投稿栏目', align: 'center'}
+      ,{field:'author', title: '作者',width:80, align: 'center'}
+      ,{field:'telephone', title: '联系电话', align: 'center'} //单元格内容水平居中
+      ,{field:'status', title: '稿件状态', align: 'center',templet:function(d) {
+                  if (d.status === '0') {
+                      return "草稿"
+                  } else if (d.status === '1') {
+                      return "推送审核"
+                  } else if (d.status === '2') {
+                    return "已审核"
+                  } else if (d.status === '3') {
+                    return "已驳回"
+                  }
+              }} //单元格内容水平居中
+      ,{field:'email', title: '电子邮箱', align: 'center'} //单元格内容水平居中
+      ,{field:'createTime', title: '时间', sort: true, align: 'center'}
+      ,{field:'content', title: '内容',  align: 'center'}
+      ,{field:'opusUnit', title: '作者单位',  align: 'center'}
+      ,{title: '附件', templet: '#temp_fujian', field: 'appendixAddress', align: 'center'}
+      ,{fixed: 'right', title:'操作', toolbar: '#barDemo' , width:256, align: 'center'}
+    ]]
+    ,even: true
+    ,page: true
+    ,limit: 10
+    ,limits: [10, 20, 30, 50, 100]
+    ,text: {
+        none: '未查询到匹配的记录' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+    },
+      done:function(res){
+          tdTitle();
+      }
+  });
+
+    var active = {
+        delete: function () {
+            var checkStatus = table.checkStatus('test')
+                ,checkData = checkStatus.data; //得到选中的数据
+            if(checkData.length === 0){
+                return layer.msg('请选择数据',{icon:7});
+            }
+            layer.confirm('确定删除所选的('+checkData.length+')个文档？', function(index) {
+                var docIds = [];
+                $.each(checkData, function(i, v){
+                    docIds.push(v.id);
+                });
+                $.ajax({
+                    type: "POST",
+                    timeout: 5000,
+                    dataType: "json",
+                    url: baseUrl+"/doc/delete",
+                    data: {"docIds":docIds},
+                    success: function(d){
+                        if(d.code=="0"){
+                            layer.msg('文档信息删除成功！', {icon: 1});
+                            table.reload('test');
+                        }else{
+                            layer.msg('文档信息删除失败：'+d.msg, {icon: 2});
+                        }
+                    },
+                    error: function(XMLHttpRequest,textStatus,errorThrown){
+                        layer.msg('文档信息删除失败：'+textStatus, {icon: 2});
+                    },
+                    complete: function(){
+                        layer.close(index);
+                    }
+                });
+            });
+        },
+        add:function () {
+            layer.open({
+                type: 2
+                ,title: '新增文档'
+                ,content: baseUrl+'/doc/toContribute'
+                ,maxmin: true
+                ,area: ['100%', '100%']
+                ,end: function(index, layero){
+                    table.reload('test');
+                }
+            });
+        },
+        reload:function () {
+            var checkStatus = table.checkStatus('test')
+                ,data = checkStatus.data;
+
+            var docIds = "";
+            $.each(data,function (i,val) {
+                docIds = docIds + val.id + ",";
+            });
+            docIds = docIds.substring(0,docIds.length-1);
+            if (docIds === "") {
+                layer.msg('请选择要导出的文档', { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+                return false;
+            }
+            window.open(baseUrl+"/doc/export?docIds="+docIds);
+        }
+    }
+
+    $('.layui-btn.gjlb_button_two').on('click', function(){
+        var type = $(this).data('type');
+        active[type] ? active[type].call(this) : '';
+    });
+  
+  /*$("#export").click(function () {
+      var checkStatus = table.checkStatus('test')
+          ,data = checkStatus.data;
+      var docIds = "";
+      $.each(data,function (i,val) {
+         docIds = docIds + val.id + ",";
+      });
+      docIds = docIds.substring(0,docIds.length-1);
+
+      window.open("/doc/export?docIds="+docIds);
+  })*/
+
+    //监听搜索
+    form.on('submit(btn-search)', function(data){
+        var field = data.field;
+        // 查询参数去空格
+        $.each(field, function(k, v) {
+            field[k] = $.trim(v);
+        });
+        //执行重载
+        table.reload('test', {
+            where: field,
+            page :{
+                curr:1
+            }
+        });
+    });
+
+    form.on('select(hc_select)', function (data) {   //选择移交单位 赋值给input框
+        $("#HandoverCompany").val(data.value);
+        $("#hc_select").next().find("dl").css({ "display": "none" });
+        form.render();
+    });
+
+    window.search = function () {
+        var value = $("#HandoverCompany").val();
+        $("#hc_select").val(value);
+        form.render();
+        $("#hc_select").next().find("dl").css({ "display": "block" });
+        var dl = $("#hc_select").next().find("dl").children();
+        var j = -1;
+        for (var i = 0; i < dl.length; i++) {
+            if (dl[i].innerHTML.indexOf(value) <= -1) {
+                dl[i].style.display = "none";
+                j++;
+            }
+            if (j == dl.length-1) {
+                $("#hc_select").next().find("dl").css({ "display": "none" });
+            }
+        }
+
+    }
+
+  
+  /*$("#save").click(function () {
+      layer.open({
+          type: 2
+          ,title: '新增文档'
+          ,content: '/doc/toContribute'
+          ,maxmin: true
+          ,area: ['100%', '100%']
+      });
+  })*/
+
+    function tdTitle(){
+        $('th').each(function(index,element){
+            $(element).attr('title',$(element).text());
+        });
+        $('td').each(function(index,element){
+            if ($(element).text().replace(/\s*/g,"") !== "") {
+              $(element).attr('title',$(element).text());
+            }
+        });
+    };
+
+    //table监控工具条
+    table.on('tool(test)', function(obj){
+        var data = obj.data;
+        if(obj.event === 'review'){
+          layer.open({
+              type: 2
+              ,title: '审核文档'
+              ,content: baseUrl+'/toReview?docId='+ data.id
+              ,maxmin: true
+              ,area: ['100%', '100%']
+              ,end: function(index, layero){
+                  table.reload('test');
+            }
+          });
+        } else if (obj.event === 'details') {
+            layer.open({
+                type: 2
+                ,title: '查看详情'
+                ,content: baseUrl+ '/doc/toDetails?docId='+ data.id
+                ,maxmin: true
+                ,area: ['100%', '100%']
+                ,end: function(index, layero){
+                    table.reload('test');
+                }
+            });
+        } else if (obj.event === 'views') {
+            layer.open({
+                type: 2
+                ,title: '驳回意见'
+                ,content: baseUrl + '/review/toView/'+ data.id
+                ,maxmin: true
+                ,area: ['90%', '90%']
+            });
+        } else if (obj.event === 'fujian') {
+            layer.open({
+                type: 2
+                ,title: '附件列表'
+                ,content:baseUrl + '/doc/toFileList?docId='+ data.id
+                ,maxmin: true
+                ,area: ['90%', '90%']
+            });
+        } else if (obj.event === 'edit') {
+            layer.open({
+                type: 2
+                ,title: '稿件编辑'
+                ,content: baseUrl + '/doc/toEdit?docId='+ data.id
+                ,maxmin: true
+                ,area: ['100%', '100%']
+                ,end: function(index, layero){
+                    table.reload('test');
+                }
+
+            });
+        } else if (obj.event === 'delete') {
+            layer.confirm('确定删除此文档（'+data.title+'）？', function(index){
+                var docIds = [];
+                docIds.push(data.id);
+                $.ajax({
+                    type: "POST",
+                    timeout: 5000,
+                    dataType: "json",
+                    url: baseUrl + "/doc/delete",
+                    data: {"docIds":docIds},
+                    success: function(d){
+                        if(d.code=="0"){
+                            layer.msg('文档信息删除成功！', {icon: 1});
+                            table.reload('test');
+                        }else{
+                            layer.msg('文档删除失败：'+d.msg, {icon: 2});
+                        }
+                    },
+                    error: function(XMLHttpRequest,textStatus,errorThrown){
+                        layer.msg('文档信息删除失败：'+textStatus, {icon: 2});
+                    },
+                    complete: function(){
+                        layer.close(index);
+                    }
+                });
+            });
+        }
+    })
+
+    var initPage = function(){
+        //初始化下拉框
+        var params = {};
+        $.ajax({
+            type: "POST",
+            // timeout: 3000,
+            dataType: "json",
+            url: baseUrl + "/doc/getChannel",
+            success: function(d){
+                if(d.code=="0"){
+                    var select = $("#qChannel");
+                    $.each(d.data, function (i, v) {
+                        select.append("<option value='"+v.id+"'>"+v.chnlName+"</option>");
+                    });
+                    form.render("select", "form-search");
+                }else{
+                    layer.msg('信息获取失败！', {icon: 2});
+                }
+            },
+            error: function(XMLHttpRequest,textStatus,errorThrown){
+                layer.msg('信息获取失败！', {icon: 2});
+            },
+            complete: function(){
+            }
+        });
+    }
+
+    $(function(){
+        initPage();
+    });
+
+});
+</script>
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function(){
+      var form = layui.form
+      ,layer = layui.layer
+      ,layedit = layui.layedit
+      ,laydate = layui.laydate;
+      
+
+      /*laydate.render({
+        elem: '#qCreateTime'
+      });*/
+      
+     
+      
+      
+    });
+    </script>
+
+
+</body>
+</html>

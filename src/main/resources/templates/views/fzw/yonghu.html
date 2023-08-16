@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>用户管理</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+  
+    <!-- 内容主体区域 -->
+    <div style="padding: 0px 20px 30px 30px;">
+      <div class="gjlb_tit_top"><span>用户管理</span></div>
+
+      <div class="demoTable gjlb_con_wai">
+        <div class="gjlb_con_left">
+          用户信息：
+          <div class="layui-inline">
+            <input class="layui-input gjlb_input_one" placeholder="请输入用户信息" name="info" id="info" autocomplete="off">
+          </div>
+          <button class="layui-btn gjlb_button_one" data-type="reload" id="search" >检索</button>
+        </div>
+
+        <div class="gjlb_con_right">
+          <button class="layui-btn gjlb_button_three" data-type="add" >新增</button>
+          <button class="layui-btn gjlb_button_three" data-type="del" >删除</button>
+<!--          <button class="layui-btn gjlb_button_three" data-type="unlock" >解锁</button>-->
+<!--          <button class="layui-btn gjlb_button_three" data-type="lock" >锁定</button>-->
+          <button class="layui-btn gjlb_button_three" data-type="resetPassword" >重置密码</button>
+        </div>
+
+      </div>
+
+    	<table class="layui-hide" id="tbl-user-list" lay-filter="tbl-user-list"></table>
+ 
+
+      <script type="text/html" id="barDemo">
+        <a class="gjlb_a_butt" lay-event="edit">编辑</a>
+        <a class="gjlb_a_butt" lay-event="permission">配置权限</a>
+      </script>
+    </div>
+</div>
+
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    const baseUrl = "[[${#servletContext.contextPath}]]";
+</script>
+<script th:inline="none">
+layui.use(['layer', 'form', 'table'], function(){
+  let $ = layui.$  //JQuery
+  let table = layui.table;
+  let info = $.trim($("#info").val());
+  let queryParams = {
+    "info" : info
+  };
+
+  //用户搜索
+  $('#search').on('click',function(){
+    var info = $.trim($("#info").val());
+    var queryParams = {
+      "info" : info
+    };
+    table.reload('tbl-user-list', {
+      where: queryParams
+    });
+  });
+
+  //表格渲染
+  table.render({
+    elem: '#tbl-user-list'
+    ,url:baseUrl + '/userList'
+    ,where:queryParams
+    ,cellMinWidth: 80 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+    ,cols: [[
+      {type: 'checkbox', fixed: 'left'},
+      {field:'numbers', title: '序号', sort: true, width:80, align: 'center'}
+      ,{field:'email', title: '用户邮箱', align: 'center'}
+      ,{field:'loginName', title: '用户名', align: 'center'}
+      ,{field:'userName', title: '真实姓名',  align: 'center'}
+      ,{field:'telephone', title: '手机号码', align: 'center'}
+      ,{field:'address', title: '地址', align: 'center'}
+      ,{field:'note', title: '备注', align: 'center'}
+      ,{field: 'status', title: '状态', templet: function(d){
+          if (d.status == 0) {
+            return "锁定";
+          } else {
+            return "正常";
+          }
+        }}
+      ,{fixed: 'right', title:'操作', toolbar: '#barDemo' , width:165, align: 'center'}
+    ]]
+    ,even: true
+    ,page: true
+  });
+
+  //表格工具
+ table.on('tool(tbl-user-list)', function(obj){
+    let data = obj.data;
+    if(obj.event === 'edit'){
+      layer.open({
+        type: 2
+        ,title: '用户信息编辑'
+        ,content: baseUrl +  '/user/edit?userId='+ data.id
+        ,maxmin: true
+        ,area: ['500px', '500px']
+        ,btn: ['确定', '取消']
+        ,yes: function(index, layero){
+          let submit = layero.find('iframe').contents().find("#btn-save");
+          submit.trigger('click');
+        }
+      });
+    }else if(obj.event === 'permission'){
+      layer.open({
+        type: 2
+        ,title: '权限编辑'
+        ,content: baseUrl +  '/role/list?userId='+ data.id
+        ,maxmin: true
+        ,area: ['500px', '500px']
+        ,btn: ['确定', '取消']
+        ,yes: function(index, layero){
+          let submit = layero.find('iframe').contents().find("#btn-save");
+          submit.trigger('click');
+        }
+      });
+    }
+  });
+
+  //工具栏
+  let active = {
+    del: function(){
+      var checkStatus = table.checkStatus('tbl-user-list')
+              ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据', {icon: 2});
+      }
+
+      layer.confirm('确定删除所选的【'+checkData.length+'】个用户？', function(index) {
+        var menuIds = [];
+        $.each(checkData, function(i, v){
+          menuIds.push(v.id);
+        });
+        $.ajax({
+          type: "POST",
+          timeout: 5000,
+          dataType: "json",
+          url: baseUrl +  "/user/del",
+          data: {"userId":menuIds},
+          success: function(d){
+            if(d.code=="0"){
+              layer.msg('用户删除成功！', {icon: 1});
+              table.reload('tbl-user-list' );
+            }else{
+              layer.msg('用户删除失败：'+d.msg, {icon: 2});
+            }
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown){
+            layer.msg('用户删除失败：'+textStatus, {icon: 2});
+          },
+          complete: function(){
+            layer.close(index);
+          }
+        });
+      });
+    },
+    add: function(){
+      layer.open({
+        type: 2
+        ,title: '用户新增'
+        ,content: baseUrl +  '/user/edit'
+        ,maxmin: true
+        ,area: ['500px', '500px']
+        ,btn: ['确定', '取消']
+        ,yes: function(index, layero){
+          //点击确认触发 iframe 内容中的按钮提交
+          var submit = layero.find('iframe').contents().find("#btn-save");
+          submit.click();
+        }
+      });
+    },
+    unlock: function(){
+      var checkStatus = table.checkStatus('tbl-user-list')
+              ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据',{ icon: 7, time: 1000, shade: [0.6, '#000', true] });
+      }
+
+      layer.confirm('确定解锁所选的【'+checkData.length+'】个用户？', function(index) {
+        var menuIds = [];
+        $.each(checkData, function(i, v){
+          menuIds.push(v.menuId);
+        });
+        $.ajax({
+          type: "POST",
+          timeout: 5000,
+          dataType: "json",
+          url: baseUrl + "/admin/menu/delete",
+          data: {"menuIds":menuIds},
+          success: function(d){
+            if(d.code=="0"){
+              layer.msg('用户解锁成功！', { icon: 1, time: 1000, shade: [0.6, '#000', true] });
+              table.reload('tbl-user-list' );
+            }else{
+              layer.msg('用户解锁失败：'+d.msg, { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+            }
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown){
+            layer.msg('用户解锁失败：'+textStatus, {icon: 2});
+          },
+          complete: function(){
+            layer.close(index);
+          }
+        });
+      });
+    },
+    lock: function(){
+      var checkStatus = table.checkStatus('tbl-user-list')
+              ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据');
+      }
+
+      layer.confirm('确定锁定所选的【'+checkData.length+'】个用户？', function(index) {
+        var menuIds = [];
+        $.each(checkData, function(i, v){
+          menuIds.push(v.menuId);
+        });
+        $.ajax({
+          type: "POST",
+          timeout: 5000,
+          dataType: "json",
+          url: baseUrl +  "/admin/menu/delete",
+          data: {"menuIds":menuIds},
+          success: function(d){
+            if(d.code=="0"){
+              layer.msg('用户锁定成功！', {icon: 1});
+              table.reload('tbl-user-list' );
+            }else{
+              layer.msg('用户锁定失败：'+d.msg, {icon: 2});
+            }
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown){
+            layer.msg('用户锁定失败：'+textStatus, {icon: 2});
+          },
+          complete: function(){
+            layer.close(index);
+          }
+        });
+      });
+    },
+    resetPassword: function(){
+      var checkStatus = table.checkStatus('tbl-user-list')
+              ,checkData = checkStatus.data; //得到选中的数据
+
+      if(checkData.length === 0){
+        return layer.msg('请选择数据',{ icon: 2, time: 1000, shade: [0.6, '#000', true] });
+      }
+
+      layer.confirm('确定重置所选的【'+checkData.length+'】个用户的密码为【fangzhiwang#1】？', function(index) {
+        var menuIds = [];
+        $.each(checkData, function(i, v){
+          menuIds.push(v.id);
+        });
+        $.ajax({
+          type: "POST",
+          timeout: 5000,
+          dataType: "json",
+          url: baseUrl +  "/user/resetPassword",
+          data: {"userIds":menuIds},
+          success: function(d){
+            if(d.code=="0"){
+              layer.msg('用户重置成功！', {icon: 1});
+              table.reload('tbl-user-list' );
+            }else{
+              layer.msg('用户重置失败：'+d.msg, {icon: 2});
+            }
+          },
+          error: function(XMLHttpRequest,textStatus,errorThrown){
+            layer.msg('用户重置失败：'+textStatus, {icon: 2});
+          },
+          complete: function(){
+            layer.close(index);
+          }
+        });
+      });
+    },
+  };
+  //工具栏监听
+  $('.layui-btn.gjlb_button_three').on('click', function(){
+    var type = $(this).data('type');
+    active[type] ? active[type].call(this) : '';
+  });
+
+});
+</script>
+
+</body>
+</html>

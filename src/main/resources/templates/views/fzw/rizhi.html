@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="utf-8">
+  <title>日志记录</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <script src="layuiadmin/layui/jquery-1.10.0.min.js"></script>
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+</head>
+<body>
+<div class="layui-layout layui-layout-admin">
+
+  <div style="padding: 0px 20px 30px 30px;">
+    <div class="gjlb_tit_top"><span>日志记录</span></div>
+
+    <div class="demoTable gjlb_con_wai">
+      <div class="demoTable gjlb_con_wai layui-form" lay-filter="form-search">
+        <div class="gjlb_con_left">
+          用户名
+          <div class="layui-inline">
+            <input class="layui-input gjlb_input_one" name="susername" id="susername" autocomplete="off">
+          </div>
+          操作类型
+          <div class="layui-inline bgg_nadao" >
+            <select name="operation" id="operation">
+              <option value="0">全部</option>
+              <option value="1">查询</option>
+              <option value="2">修改</option>
+              <option value="3">删除</option>
+              <option value="4">新增</option>
+            </select>
+          </div>
+          日志类型
+          <div class="layui-inline bgg_nadao">
+            <select  name="slogType" id="slogType">
+              <option value="0">全部</option>
+              <option value="1">信息</option>
+              <option value="2">警告</option>
+              <option value="3">异常</option>
+              <option value="4">调试</option>
+
+            </select>
+          </div>
+          操作对象
+          <div class="layui-inline bgg_nadao">
+            <select  name="operationUnit" id="operationUnit">
+              <option value="0">全部</option>
+              <option value="1">稿件</option>
+              <option value="2">用户</option>
+              <option value="3">咨询</option>
+              <option value="4">其他</option>
+            </select>
+          </div>
+          <button class="layui-btn gjlb_button_one" data-type="reload" lay-submit lay-filter="do_search">检索</button>
+        </div>
+      </div>
+
+    </div>
+
+    <table class="layui-hide" id="test" lay-filter="test"></table>
+
+
+    <script type="text/html" id="barDemo_cha">
+      <a lay-event="detail" class="gjlb_a_butt">查看</a>
+    </script>
+
+  </div>
+</div>
+
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    const baseUrl = "[[${#servletContext.contextPath}]]";
+</script>
+<script  type="text/javascript"  th:inline="none">
+    layui.use(['layer', 'form', 'table', 'laydate'], function () {
+        var $ = layui.$  //JQuery
+            , layer = layui.layer
+            , form = layui.form
+            , table = layui.table
+            , laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#qCreateTime'
+            , type: 'date'
+        });
+
+        var table = layui.table;
+        var location = (window.location + '').split('/');
+        var basePath = location[0] + '//' + location[2];
+        table.render({
+            elem: '#test'
+            , url: baseUrl + '/queryLogList'
+            , cellMinWidth: 60 //全局定义常规单元格的最小宽度，layui 2.2.1 新增
+            , method: 'post'
+            , initSort: {
+                field: 'createDate' //排序字段，对应 cols 设定的各字段名
+                , type: 'desc' //排序方式  asc: 升序、desc: 降序、null: 默认排序
+            }
+            , cols: [[
+                {type: 'checkbox'}
+                , {field: 'id', title: '序号', width: 80, sort: true, align: 'center'}
+                , {field: 'username', title: '用户名', align: 'center'}
+                , {
+                    field: 'operation', title: '操作类型', align: 'center',
+                    templet: function (data) {
+                        if (data.operation == "select") {
+                            return "查询"
+                        } else if (data.operation == "update") {
+                            return "修改"
+                        } else if (data.operation == "delete") {
+                            return "删除"
+                        } else if (data.operation == "insert") {
+                            return "新增"
+                        } else {
+                            return "其他"
+                        }
+                    }
+                }
+                , {field: 'ip', title: '操作IP', align: 'center'}
+                , {field: 'createDate', title: '创建时间', align: 'center', width: 180}
+                , {field: 'describes', title: '日志描述', align: 'center'}
+                , {field: 'logType', title: '日志类型', align: 'center'}
+                , {
+                    field: 'operationUnit', title: '操作对象', align: 'center',
+                    templet: function (data) {
+                        if (data.operationUnit == "consult") {
+                            return "咨询"
+                        }  else if (data.operationUnit == "user") {
+                            return "用户"
+                        } else if (data.operationUnit == "documents") {
+                            return "稿件"
+                        } else {
+                            return "其他"
+                        }
+                    }
+                }
+                , {
+                    field: 'runTime', title: '运行时间', align: 'center',
+                    templet: function (data) {
+                        var restime = data.runTime;
+                        if (restime / 1000 > 0.1) {
+                            return restime / 1000 + "ms";
+                        } else {
+                            return 0.1 + "ms";
+                        }
+                    }
+                }
+                , {field: 'right', title: '操作', toolbar: '#barDemo_cha', align: 'center'}
+            ]]
+            , even: true
+            , page: true
+            , done: function (res) {
+                tdTitle();
+            }
+            , text: {
+                none: '未查询到匹配的记录' //默认：无数据。注：该属性为 layui 2.2.5 开始新增
+            },
+        });
+        table.on('tool(test)', function (obj) {
+            var data = obj.data;
+            if (obj.event === 'detail') {
+                layer.open({
+                    type: 2
+                    , title: '日志详情'
+                    , content: baseUrl + '/queryLogOne?logid=' + data.id
+                    , maxmin: true
+                    , area: ['50%', '100%']
+                    , end: function (index, layero) {
+                        table.reload('test');
+                    }
+                });
+            } else {
+                layui.table.reload('test');
+            }
+        });
+        //搜索按钮绑定查询条件
+        form.on('submit(do_search)', function (data) {
+            var field = data.field;
+            // 查询参数去空格
+            $.each(field, function (k, v) {
+                field[k] = $.trim(v);
+            });
+            var susername = $("#susername").val();
+            var operation = $("#operation").val();
+            var slogType = $("#slogType").val();
+            var operationUnit = $("#operationUnit").val();
+            //执行重载
+            table.reload('test', {
+                where: {
+                    qLoginName: susername,
+                    operation: operation,
+                    slogType: slogType,
+                    operationUnit: operationUnit
+                },
+                page: {
+                    curr: 1
+                }
+            });
+        });
+
+        function tdTitle() {
+            $('th').each(function (index, element) {
+                $(element).attr('title', $(element).text());
+            });
+            $('td').each(function (index, element) {
+                $(element).attr('title', $(element).text());
+            });
+        };
+    });
+
+</script>
+<!--操作对象-->
+<!--<script type="text/html" id="returnValue">
+  <a class="layui-btn layui-btn-xs" lay-event="detail">点击查看</a>
+</script>-->
+<script>
+    layui.use(['form', 'layedit', 'laydate'], function () {
+        var form = layui.form
+            , layer = layui.layer
+            , layedit = layui.layedit
+            , laydate = layui.laydate;
+
+        //日期
+        laydate.render({
+            elem: '#date'
+        });
+        laydate.render({
+            elem: '#date1'
+        });
+
+        //创建一个编辑器
+        var editIndex = layedit.build('LAY_demo_editor');
+    });
+</script>
+
+
+</body>
+</html>

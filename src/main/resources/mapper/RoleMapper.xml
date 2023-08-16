@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eprobj.mapper.RoleMapper">
+
+    <select id="listByUserName" resultType="com.eprobj.entity.Role">
+    SELECT
+      role.role_id AS roleId,
+      role.role_name AS roleName,
+      role.role_content AS roleContent,
+      role.STATUS,
+      role.cdate
+    FROM
+        user_role userrole
+        LEFT JOIN role role ON userrole.role_id = role.role_id
+        LEFT JOIN user USER ON USER.id = userrole.user_id
+    WHERE
+        USER.user_name = #{username}
+  </select>
+
+
+
+    <select id="roleList" resultType="com.eprobj.entity.Role">
+    SELECT
+      role_id AS roleId,
+      role_name AS roleName,
+      role_content AS roleContent,
+      status,
+      cdate
+    FROM
+        role
+    where status = #{status}
+  </select>
+
+
+    <insert id="saveRole">
+    INSERT INTO user_role(cdate,role_id,user_id)
+    values (now(),#{roleId},#{userId})
+  </insert>
+
+    <delete id="delRole">
+        delete from  user_role where user_id=#{userId}
+    </delete>
+
+
+
+    <select id="listByUserId" resultType="com.eprobj.entity.Role">
+    SELECT
+      role.role_id AS roleId,
+      role.role_name AS roleName,
+      role.role_content AS roleContent,
+      role.STATUS,
+      role.cdate
+    FROM
+        user_role userrole
+        LEFT JOIN role role ON userrole.role_id = role.role_id
+        LEFT JOIN user USER ON USER.id = userrole.user_id
+    WHERE
+        USER.id = #{id}
+  </select>
+
+</mapper>

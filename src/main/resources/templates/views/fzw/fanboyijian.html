@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>反驳意见</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/template.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+
+</head>
+<body>
+<div class="new_tanchucen">
+  <div class="new_panddshezhi">
+    <div>
+      <table class="layui-table">
+        <thead>
+          <tr>
+            <th class="jh_jueseli">序号</th>
+            <th>意见</th>
+            <th class="jh_jueseli">审核人</th>
+            <th class="jh_jueseli">审核时间</th>
+          </tr>
+        </thead>
+
+        <tbody th:each="review,reviewStat : ${review}">
+          <tr>
+            <td th:text="${reviewStat.index} + 1">10001</td>
+            <td class="xz_leftju" th:text="${review.reviewView}">高田时雄，1980年获得法国哲学博士，2005年获京都大学文学博士。现为京都大学人文科学研究所教授。日本著名东方学家、敦煌学家，并担任敦煌学国际联络委员会干事长，对于海外以及中国敦煌学的研究状况及发展趋势有深刻的洞见。编著有《敦煌·民族·语言》、《日本东方学》、《梵蒂冈图书馆所藏汉籍目录》等。</td>
+            <td th:text="${review.userName}" >某某</td>
+            <td th:text="${#dates.format(review.createTime,'yyyy-MM-dd HH:mm:ss')}">2019-09-09</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+
+
+
+
+
+
+</body>
+</html>

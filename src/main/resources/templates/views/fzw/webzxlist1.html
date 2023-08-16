@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>咨询留言</title>
+
+  <link rel="stylesheet" type="text/css" href="../../layuiadmin/style/fzwp/images/fzBase_v2109.css"/>
+  <link type="text/css" rel="stylesheet" href="../../layuiadmin/style/fzwp/images/datetimepicker.css">
+  <link rel="stylesheet" type="text/css" href="../../layuiadmin/style/fzwp/images/fz_hzx_inner.css"/>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/respond.src_v2019.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/jquery-1.12.4.min_v2019.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/jquery.SuperSlide.2.1.1_v2019.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/jquery.masonry_v2019.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/fzBase_v2019.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/datetimepicker.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/jquery.nicescroll.min.js"></script>
+  <script type="text/javascript" src="../../layuiadmin/style/fzwp/images/fz_hzx_inner.js"></script>
+</head>
+<body>
+<div class="fzIndexBox">
+    <div class="fzInnerNav"> 当前位置：<a href="">首页</a> > <a href="">互动交流</a> > <a href="/consultWyzx">咨询留言</a> </div>
+  <div class="center innerCenter">
+    <div class="zxlyCenter" id="list">
+
+    </div>
+    <div class="cj_page" id="page">   </div>
+  </div>
+<script>
+
+function getData(page){
+	$("#list").html("<div class='zxlyCTitle'><p>咨询留言</p><a href='/consultWyzx'>我要咨询</a> </div>");
+	$.ajax({
+		type : "get",//请求方式
+		contentType: "application/json;charset=UTF-8",//请求的媒体类型
+		url : "/webconsultlist",//请求地址
+		data : {"pageNum":page,"pageSize":10},
+		success : function(result) { //请求成功
+                console.log(result);
+			for(var i = 0; i < result.list.length; i++){
+				$("#list").append("<div class='zxlyCQuestion'> <i>问</i><p>"+result.list[i].title+"</p><p style='text-align:right'>"+result.list[i].createDate+"</p></div>");
+				$("#list").append("<div class='zxlyCAnswerBox'><div class='zxlyCAnswer'> <i>答</i><p>"+result.list[i].answer+"</p><p style='text-align:right'>"+result.list[i].answerCreateDate+"</p></div></div>");
+			}
+
+var currentPage=page;
+var countPage=result.pageNum;
+if(currentPage==1){
+	$("#page").html("<a class='cj_p_prve' href='javascript:void(0)'>&nbsp;</a>");
+}else{
+	$("#page").html("<a class='cj_p_prve' href='javascript:void(0)' onclick='getData("+currentPage+"-1)'>&nbsp;</a>");
+}	
+//循环5个页码
+
+var num = 9;
+var startPage=currentPage-4;
+if(startPage<0) startPage=1;
+var endpage=startPage+num;
+if(endpage>countPage)endpage=countPage;
+startPage=endpage-9;
+if(startPage<0) startPage=1;
+
+
+for(var i=startPage; i<=endpage ; i++){
+	if(i==currentPage){
+		$("#page").append("<a href='javascript:void(0)' class='cj_p_active' onclick='getData("+i+")'>"+i+"</a>");
+	}else{
+		$("#page").append("<a href='javascript:void(0)' onclick='getData("+i+")'>"+i+"</a>");
+	}	
+}
+
+
+if(currentPage==countPage){
+	$("#page").append("<a class='cj_p_next' href='javascript:void(0)'>&nbsp;</a>");
+}else{
+	$("#page").append("<a class='cj_p_next' href='javascript:void(0)' onclick='getData("+currentPage+"+1)'>&nbsp;</a>");
+}				
+	
+			
+			
+		},
+		error : function(e){//请求失败，包含具体的错误信息
+			console.log(e.status);
+			console.log(e.responseText);
+		}
+	});
+}
+//通过接口数据获取数据
+$(function(){
+	getData(1);
+});
+</script>
+</div>
+</body>
+</html>

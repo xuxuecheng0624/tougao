@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eprobj.mapper.LogMapper">
+
+    <insert id="save" parameterType="com.eprobj.entity.Log">
+        INSERT INTO log (
+        username,
+        operation,
+        method,
+        params,
+        ip,
+        create_date,
+        describes,
+        operationUnit,
+        runTime,
+        returnValue,
+        logType
+        )
+        VALUES
+        (#{username}, #{operation}, #{method}, #{params}, #{ip}, #{createDate}, #{describes}, #{operationUnit},#{runTime}, #{returnValue}, #{logType})
+    </insert>
+
+    <select id="queryLogList" resultType="com.eprobj.entity.Log">
+        SELECT
+        id,
+        username,
+        operation,
+        method,
+        params,
+        ip,
+        create_date AS createDate,
+        describes,
+        runTime,
+        returnValue,
+        logType,
+        operationUnit
+        FROM
+        log
+        WHERE
+        1 = 1
+        <if test="qLoginName!=null and qLoginName!=''">
+            and username like concat('%',#{qLoginName},'%')
+        </if>
+        <if test="slogType != null and slogType != '' ">
+            AND logType like concat('%', #{slogType}, '%')
+        </if>
+        <if test="operationUnit != null and operationUnit != '' and operationUnit!= 'other' ">
+            AND operationUnit like concat('%', #{operationUnit}, '%')
+        </if>
+        <if test="operation!=null">
+            AND operation like concat('%', #{operation}, '%')
+        </if>
+        order BY create_date DESC
+        <if test="page!=null and limit!=null">
+            limit #{page,jdbcType=INTEGER},#{limit,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Long" flushCache="true">
+        SELECT
+        COUNT(id)
+        FROM
+        log
+        WHERE
+        1 = 1
+        <if test="qLoginName!=null and qLoginName!=''">
+            and username like concat('%',#{qLoginName},'%')
+        </if>
+        <if test="slogType != null and slogType != '' ">
+            AND logType like concat('%', #{slogType}, '%')
+        </if>
+        <if test="operationUnit != null and operationUnit != '' and operationUnit!= 'other' ">
+            AND operationUnit like concat('%', #{operationUnit}, '%')
+        </if>
+        <if test="operation!=null">
+            AND operation like concat('%', #{operation}, '%')
+        </if>
+    </select>
+
+    <select id="queryLogOne" parameterType="java.lang.Integer" resultType="com.eprobj.entity.Log">
+        SELECT
+        id,
+        username,
+        operation,
+        method,
+        params,
+        ip,
+        create_date AS createDate,
+        describes,
+        runTime,
+        returnValue,
+        logType,
+        operationUnit
+        FROM
+        log
+        WHERE
+        id = #{id}
+    </select>
+</mapper>

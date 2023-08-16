@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eprobj.mapper.ChannelMapper">
+    <select id="page" parameterType="java.util.Map" resultType="com.eprobj.entity.Channel">
+        SELECT
+          id AS id,
+          chnl_name AS chnlName,
+          chnl_desc AS chnlDesc,
+          create_time AS createTime
+        FROM
+          channel
+        WHERE
+          1 = 1
+        <if test="qChnlName != null and  qChnlName != '' ">
+            AND chnl_name LIKE CONCAT('%',CONCAT(#{qChnlName},'%'))
+        </if>
+        <if test="qCreateTime != null and qCreateTime != ''">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') = #{qCreateTime}
+        </if>
+        order by  create_time DESC
+        <if test="index!=null and limit!=null">
+            LIMIT #{index},#{limit}
+        </if>
+
+    </select>
+    
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Long" flushCache="true">
+        SELECT
+          COUNT(1)
+        FROM
+          channel
+        WHERE
+          1 = 1
+        <if test="qChnlName != null and  qChnlName != '' ">
+            AND chnl_name LIKE CONCAT('%',CONCAT(#{qChnlName},'%'))
+        </if>
+        <if test="qCreateTime != null and qCreateTime != ''">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') = #{qCreateTime}
+        </if>
+    </select>
+
+    <select id="getById" resultType="com.eprobj.entity.Channel">
+        SELECT
+        id AS id,
+          chnl_name AS chnlName,
+          chnl_desc AS chnlDesc,
+          create_time AS createTime
+        FROM
+          channel
+        WHERE
+          id = #{id}
+    </select>
+
+    <insert id="save" parameterType="com.eprobj.entity.Channel">
+        insert into channel
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="chnlName != null">
+                chnl_name,
+            </if>
+            <if test="chnlDesc != null">
+                chnl_desc,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="chnlName != null">
+                #{chnlName,jdbcType=VARCHAR},
+            </if>
+            <if test="chnlDesc != null">
+                #{chnlDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+
+    <update id="updateById" parameterType="com.eprobj.entity.Channel">
+        UPDATE channel
+        <set>
+            <if test="chnlName != null">
+                chnl_name = #{chnlName,jdbcType=VARCHAR},
+            </if>
+            <if test="chnlDesc != null">
+                chnl_desc = #{chnlDesc,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from
+        channel
+        where
+        id in
+        <foreach collection="ids" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="findInfoByName" resultType="com.eprobj.entity.Channel">
+        SELECT
+          id AS id,
+          chnl_name AS chnlName,
+          chnl_desc AS chnlDesc,
+          create_time AS createTime
+        FROM
+          channel
+        WHERE chnl_name = #{chnlName}
+    </select>
+</mapper>

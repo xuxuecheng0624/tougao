@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>日志详情</title>
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+</head>
+<body>
+
+<div class="layui-fluid">
+  <div class="layui-card" style="background-color: transparent;">
+    <div class="gjlb_tit_top"><span>查看内容</span></div>
+
+    <div class="layui-card-body layui-form" style="padding: 15px;">
+
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">序&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;号：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.id}">
+            10000
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">用&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;户：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.username}">
+            近代中国的学术与藏书
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">操作类型：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.operation}">
+            写作
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">方&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;法：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.method}">
+            黎锦熙
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">访问地址：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.ip}">
+            2402339718@163.com
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">时&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;间：</label>
+          <div class="layui-input-inline new_luosheng"
+               th:text="${#dates.format(log.createDate,'yyyy-MM-dd HH:mm:ss')}">
+            2019-07-31
+          </div>
+        </div>
+      </div>
+
+
+      <div class="layui-form-item">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">日志描述：</label>
+          <div class="layui-input-inline new_luosheng" th:text="${log.describes}">
+            社科院
+          </div>
+        </div>
+      </div>
+
+      <div class="layui-form-item layui-form-text">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">参&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数：</label>
+          <textarea class="layui-input-inline new_luosheng" style="width: 400px;" readonly="readonly" th:text="${log.params}">
+                18020128999
+              </textarea>
+        </div>
+      </div>
+      <div class="layui-form-item layui-form-text">
+        <div class="layui-inline">
+          <label class="layui-form-label new_colorse">回&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;值：</label>
+          <textarea class="layui-input-inline new_luosheng" style="width: 400px;" readonly="readonly" th:text="${log.returnValue}">
+                  社科院
+              </textarea>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="text/javascript" th:src="@{/layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+<script>
+    const baseUrl = "[[${#servletContext.contextPath}]]";
+</script>
+<script>
+    layui.config({
+        base: baseUrl + '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'laydate', 'upload', 'layedit'], function () {
+        var $ = layui.$
+            , admin = layui.admin
+            , element = layui.element
+            , layer = layui.layer
+            , laydate = layui.laydate
+            , form = layui.form
+            , upload = layui.upload
+            , layedit = layui.layedit;
+
+
+        form.render(null, 'component-form-group');
+
+        laydate.render({
+            elem: '#LAY-component-form-group-date'
+        });
+
+        /* 自定义验证规则 */
+        form.verify({
+            title: function (value) {
+                if (value.length < 5) {
+                    return '标题至少得5个字符啊';
+                }
+            }
+            , pass: [/(.+){6,12}$/, '密码必须6到12位']
+        });
+
+        layedit.set({
+            uploadImage: {
+                //接口url
+                url: baseUrl +  '/doc/upload/contentImg',
+                type: 'post' //默认post
+            }
+        })
+
+        var index = layedit.build('demo'); //建立编辑器
+
+        /* 监听指定开关 */
+        form.on('switch(component-form-switchTest)', function (data) {
+            layer.msg('开关checked：' + (this.checked ? 'true' : 'false'), {
+                offset: '6px'
+            });
+            layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+        });
+
+        /* 监听提交 */
+        form.on('submit(component-form-demo1)', function (data) {
+            parent.layer.alert(JSON.stringify(data.field), {
+                title: '最终的提交信息'
+            })
+            return false;
+        });
+
+        //指定允许上传的文件类型
+        upload.render({
+            elem: '#test-upload-type1'
+            , url: baseUrl +  '/upload/'
+            , accept: 'file' //普通文件
+            , done: function (res) {
+                console.log(res)
+            }
+        });
+
+
+        //设定文件大小限制
+        upload.render({
+            elem: '#test-upload-size'
+            , url: baseUrl +  '/upload/'
+            , size: 60 //限制文件大小，单位 KB
+            , done: function (res) {
+                console.log(res)
+            }
+        });
+
+
+    });
+</script>
+<script type="text/javascript">
+    $(".new_quxiao").click(function () {
+        $(".new_yongchong").hide();
+    });
+</script>
+
+</body>
+</html>

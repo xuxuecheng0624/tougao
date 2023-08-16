@@ -1,0 +1,384 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>审核</title>
+  <meta name="renderer" content="webkit">
+  <base th:href="${#request.getContextPath()}+'/'">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+  <script th:src="@{/ueditor/ueditor.config.js}"></script>
+  <script th:src="@{/ueditor/ueditor.all.min.js}"></script>
+  <script th:src="@{/ueditor/lang/zh-cn/zh-cn.js}"></script>
+</head>
+<body>
+
+  <div class="layui-fluid">
+    <div class="layui-card" style="background-color: transparent;">
+      <div class="gjlb_tit_top"><span>申报内容</span></div>
+      
+      <div class="layui-card-body layui-form" style="padding: 15px;">
+
+
+        <div class="layui-input-inline new_luosheng" style="display: none" id="number" th:text="${documents.id}">
+          10000
+        </div>
+
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label bb_xinhao">标&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;题</label>
+            <div class="layui-input-inline">
+              <input type="text" name="title" lay-verify="title" disabled  th:value="${documents.title}" autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label bb_xinhao">投稿栏目</label>
+            <div class="layui-input-inline">
+              <input type="text" name="title" lay-verify="title"  disabled th:value="${documents.channel}" autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+        </div>
+
+
+        <div class="layui-form-item">
+          <div class="layui-inline">
+            <label class="layui-form-label">作者单位</label>
+            <div class="layui-input-inline">
+              <input type="text" name="opusUnit" disabled th:value="${documents.opusUnit}"  autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label bb_xinhao">作者姓名</label>
+            <div class="layui-input-inline">
+              <input type="text" name="author" disabled th:value="${documents.author}" lay-verify="author"   autocomplete="off" class="layui-input">
+            </div>
+          </div>
+
+        </div>
+
+        <!--新增字段Start-->
+        <div class="layui-form-item new ">
+          <div class="layui-inline">
+            <label class="layui-form-label">出&nbsp;&nbsp;版&nbsp;&nbsp;社</label>
+            <div class="layui-input-inline">
+              <input type="text" name="pressName" disabled th:value="${documents.pressName}"  autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">出版时间</label>
+            <div class="layui-input-inline">
+              <!--<input type="text" name="username" lay-verify="required"  autocomplete="off" class="layui-input teshuinputjian">-->
+              <input type="text" name="publishTime" disabled th:value="${documents.publishTime}" id="date1" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-form-item new ">
+          <div class="layui-inline">
+            <label class="layui-form-label">版&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;次</label>
+            <div class="layui-input-inline">
+              <input type="text" name="edition" disabled th:value="${documents.edition}"  autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">印&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;次</label>
+            <div class="layui-input-inline">
+              <input type="text" name="impression" disabled th:value="${documents.impression}"  autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-form-item new ">
+          <div class="layui-inline">
+            <label class="layui-form-label">字&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数</label>
+            <div class="layui-input-inline">
+              <input type="text" name="wordNum" disabled th:value="${documents.wordNum}" autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">页&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;数</label>
+            <div class="layui-input-inline">
+              <input type="text" name="pageNum" disabled th:value="${documents.pageNum}"  autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-form-item new">
+          <div class="layui-inline">
+            <label class="layui-form-label">装&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;帧</label>
+            <div class="layui-input-inline">
+              <input type="text" name="bind" disabled th:value="${documents.bind}"  autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+          <div class="layui-inline">
+            <label class="layui-form-label">品&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;相</label>
+            <div class="layui-input-inline">
+              <input type="text" name="phase" disabled th:value="${documents.phase}" autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+        </div>
+
+        <div class="layui-form-item new">
+          <div class="layui-inline new">
+            <label class="layui-form-label ">联&nbsp;&nbsp;系&nbsp;&nbsp;人</label>
+            <div class="layui-input-inline">
+              <input type="text" name="linkman" disabled th:value="${documents.linkman}" lay-verify="linkman" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+          <div class="layui-inline new">
+            <label class="layui-form-label bb_xinhao">联系方式</label>
+            <div class="layui-input-inline">
+              <input type="text" name="telephone" disabled th:value="${documents.telephone}"  lay-verify="telephone" autocomplete="off" class="layui-input">
+            </div>
+          </div>
+        </div>
+        <div class="layui-form-item new">
+          <div class="layui-inline">
+            <label class="layui-form-label">定&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;价</label>
+            <div class="layui-input-inline">
+              <input type="text" name="price" disabled th:value="${documents.price}" autocomplete="off" class="layui-input teshuinputjian">
+            </div>
+          </div>
+        </div>
+        <!--新增字段End-->
+
+        <div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">内&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;容</label>
+          <div class="layui-input-block">
+            <textarea name="content" placeholder="请输入内容" disabled id="demo" th:text="${documents.content}"   style="min-height: 500px"  class="layui-textarea teshuareajian"></textarea>
+
+          </div>
+        </div>
+
+        <div class="layui-form-item layui-form-text">
+          <label class="layui-form-label">备&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;注</label>
+          <div class="layui-input-block">
+            <textarea name="notes"  th:text="${documents.notes}"  placeholder="请输入备注" lay-verify="notes" class="layui-textarea"></textarea>
+            注：输入内容不能超出1000个汉字
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label">图&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;片</label>
+          <div class="layui-input-block" id="images">
+            <button type="button" class="layui-btn-wo" id="test-upload-size">上传图片</button>
+            <input type="hidden" id="img_url" name="imagesAddress" value="" />
+            <input type="hidden" id="img_name" name="imagesName" value="" />
+            <div class="layui-inline layui-word-aux">
+              支持大小不超过2M的 jpg,png.gif图片
+            </div>
+            <span th:if="${ not #lists.isEmpty(images)}">
+                <div id="imagesContainer" >
+                  <div class="layui-upload-list layui-inline" th:each="image,imageStat:${images}">
+
+                  <img class="layui-upload-img images" th:name="${image.imageName}" th:url="${image.image}"   th:src="@{${image.image}}"  width="100px" height="80px"/>
+                    <p id="demoText" ></p>
+                  </div>
+                </div>
+              </span>
+          </div>
+        </div>
+
+        <div class="layui-form-item">
+          <label class="layui-form-label ">附&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;件</label>
+          <div class="layui-input-block">
+            <button type="button" class="layui-btn-wo" id="test-upload-type1">选择附件</button>
+            <input type="hidden" id="file_url" name="appendixAddress" value=""/>
+            <input type="hidden" id="file_name" name="appendixName" value=""/>
+            <div class="layui-upload-list">
+              <p id="demoText2"></p>
+            </div>
+            <div class="layui-inline  layui-word-aux">
+              附件支持的类型：txt,pdf,doc,docx,xls,xlsx,ppt,pptx,rar,jpg,jpeg,gif,png,bmp; 大小20480KB以内
+            </div>
+            <span  th:if="${ not #lists.isEmpty(files)}">
+                <div id="textContainer" th:each="file,fileStat:${files}">
+                  <div class="layui-upload-list">
+
+                    <span class='docFile' th:name="${file.fileName}"th:url="${file.file}"  th:text="${file.fileName}" >res.name</span>
+                  </div>
+                </div>
+              </span>
+          </div>
+        </div>
+
+
+          <div class="layui-form-item">
+            <div class="layui-input-block">
+              <div class="layui-footer new_haisao">
+                <button class="layui-btn lb_tijiaoh" lay-submit="" id="btn-save" lay-filter="component-form-demo1">通过</button>
+                <button type="reset"  id="bohui" class="layui-btn lb_tijiaop">驳回</button>
+              </div>
+            </div>
+          </div>
+
+
+        <form class="layui-form" action="" lay-filter="component-form-group">
+          <div class="new_yongchong" style="display: none" >
+            <div class="layui-form-item layui-form-text">
+              <label class="layui-form-label new_colorse2 ">请填写驳回意见</label>
+              <div class="layui-input-block new_mainiliang">
+                <textarea name="text" id="views" lay-verify="bohui" placeholder="输入内容不能超出300个汉字" class="layui-textarea teshuareajian"></textarea>
+              </div>
+            </div> 
+
+
+            <div class="layui-form-item">
+              <div class="layui-input-block">
+                <div class="layui-footer new_haisao ">
+                  <button class="layui-btn lb_tijiaoh" lay-submit="" id="btn-save2" lay-filter="component-form-demo2">提交</button>
+                  <span class="layui-btn lb_tijiaop new_quxiao">取消</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script type="text/javascript" th:src="@{/layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+  <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+  <script>
+      const baseUrl = "[[${#servletContext.contextPath}]]";
+  </script>
+  <script>
+  layui.config({
+    base: baseUrl + '/layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use(['index', 'form', 'laydate','upload', 'layedit'], function(){
+    var $ = layui.$
+    ,admin = layui.admin
+    ,element = layui.element
+    ,layer = layui.layer
+    ,laydate = layui.laydate
+    ,form = layui.form
+    ,upload = layui.upload
+        ,layedit = layui.layedit;
+
+
+    form.render(null, 'component-form-group');
+
+    laydate.render({
+      elem: '#LAY-component-form-group-date'
+    });
+
+
+      var ue = UE .getEditor('demo',{autoHeightEnabled: false});
+      ue.ready(function() {
+          //不可编辑
+          ue.setDisabled();
+      });
+    
+    /* 自定义验证规则 */
+    form.verify({
+        bohui:function (value) {
+            if (value !== "") {
+                if (value.length > 300) {
+                  return '驳回意见不得超过300字';
+                }
+            }
+        }
+    });
+    
+    /* 监听指定开关 */
+    form.on('switch(component-form-switchTest)', function(data){
+      layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+        offset: '6px'
+      });
+      layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+    });
+    
+    /* 监听提交 */
+    form.on('submit(component-form-demo1)', function(data){
+      /*parent.layer.alert(JSON.stringify(data.field), {
+        title: '最终的提交信息'
+      })*/
+      data = {
+          "status": "2"
+      };
+        $.ajax({
+            async:false,          //是否异步
+            type:"POST",         //请求类型
+            dataType:"json",  //返回的数据类型
+            contentType:"application/json",   //请求的参数类型
+            url: baseUrl + "/review/"+$("#number").text(),                    //链接地址
+            data:JSON.stringify(data),
+            success:function(data){
+                layer.msg(data.msg,{icon:1});
+                setTimeout(function(){
+                    var index = parent.layer.getFrameIndex(window.name);
+                    parent.layer.close(index);//关闭当前页
+                }, 1000);
+            },error:function(){
+                alert("进来了error"+data);
+            }
+        })
+        return false;
+    });
+
+      form.on('submit(component-form-demo2)', function(data){
+          /*parent.layer.alert(JSON.stringify(data.field), {
+            title: '最终的提交信息'
+          })*/
+          data = {
+              "status": "3",
+              "reviewView" : $("#views").val()
+          };
+          $.ajax({
+              async:false,          //是否异步
+              type:"POST",         //请求类型
+              dataType:"json",  //返回的数据类型
+              contentType:"application/json",   //请求的参数类型
+              url: baseUrl + "/review/"+$("#number").text(),                    //链接地址
+              data:JSON.stringify(data),
+              success:function(data){
+                  layer.msg(data.msg,{icon:1});
+                  setTimeout(function(){
+                      var index = parent.layer.getFrameIndex(window.name);
+                      parent.layer.close(index);//关闭当前页
+                  }, 1000);
+              },error:function(){
+                  alert("进来了error"+data);
+              }
+          })
+          return false
+      });
+
+      /*<![CDATA[*/
+      var channel ="[[${documents.channel}]]";
+      /*]]>*/
+      $(function () {
+          if (channel === "图书交流") {
+              $(".new").show();
+          } else {
+              $(".new").hide();
+          }
+      })
+
+    
+
+
+
+  });
+  </script>
+  <script type="text/javascript">
+    $(".new_quxiao").click(function(){
+      $(".new_yongchong").hide();
+    });
+
+    $("#bohui").click(function(){
+        $(".new_yongchong").show();
+    });
+  </script>
+
+</body>
+</html>

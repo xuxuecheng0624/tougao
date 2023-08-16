@@ -1,0 +1,442 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.eprobj.mapper.DocumentsMapper">
+    <insert id="save" parameterType="com.eprobj.entity.Documents">
+        insert into document
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="channel != null">
+                channel,
+            </if>
+            <if test="chnlId != null">
+                chnl_id,
+            </if>
+            <if test="opusUnit != null">
+                opus_unit,
+            </if>
+            <if test="appendixAddress != null">
+                appendix_address,
+            </if>
+            <if test="appendixName != null">
+                appendix_name,
+            </if>
+            <if test="imagesAddress != null">
+                images_address,
+            </if>
+            <if test="imagesName != null">
+                images_name,
+            </if>
+            <if test="notes != null">
+                notes,
+            </if>
+            <if test="userId != null">
+                user_id,
+            </if>
+            <if test="status != null">
+                status,
+            </if>
+            <if test="createTime != null">
+                create_time,
+            </if>
+            <if test="updateTime != null">
+                update_time,
+            </if>
+            <if test="content != null">
+                content,
+            </if>
+            <if test="pressName != null">
+                press_name,
+            </if>
+            <if test="publishTime != null">
+                publish_time,
+            </if>
+            <if test="edition != null">
+                edition,
+            </if>
+            <if test="impression != null">
+                impression,
+            </if>
+            <if test="wordNum != null">
+                word_num,
+            </if>
+            <if test="pageNum != null">
+                page_num,
+            </if>
+            <if test="bind != null">
+                bind,
+            </if>
+            <if test="phase != null">
+                phase,
+            </if>
+            <if test="price != null">
+                price,
+            </if>
+            <if test="telephone != null">
+                telephone,
+            </if>
+            <if test="author != null">
+                author,
+            </if>
+            <if test="linkman != null">
+                linkman,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                #{channel,jdbcType=VARCHAR},
+            </if>
+            <if test="chnlId != null">
+                #{chnlId,jdbcType=VARCHAR},
+            </if>
+            <if test="opusUnit != null">
+                #{opusUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="appendixAddress != null">
+                #{appendixAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="appendixName != null">
+                #{appendixName,jdbcType=VARCHAR},
+            </if>
+            <if test="imagesAddress != null">
+                #{imagesAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="imagesName != null">
+                #{imagesName,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                  #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="pressName != null">
+                #{pressName,jdbcType=VARCHAR},
+            </if>
+            <if test="publishTime != null">
+                #{publishTime,jdbcType=VARCHAR},
+            </if>
+            <if test="edition != null">
+                #{edition,jdbcType=VARCHAR},
+            </if>
+            <if test="impression != null">
+                #{impression,jdbcType=VARCHAR},
+            </if>
+            <if test="wordNum != null">
+                #{wordNum,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNum != null">
+                #{pageNum,jdbcType=VARCHAR},
+            </if>
+            <if test="bind != null">
+                #{bind,jdbcType=VARCHAR},
+            </if>
+            <if test="phase != null">
+                #{phase,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                #{price,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="linkman != null">
+                #{linkman,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+
+    <select id="page" parameterType="java.util.Map" resultType="com.eprobj.entity.Documents" flushCache="true">
+        SELECT
+            doc.id,
+            title,
+            chnl.chnl_name AS channel,
+            opus_unit AS opusUnit,
+            content,
+            doc.user_id AS userId,
+            doc.telephone,
+            u.email,
+            author,
+            u.user_name AS userName,
+            doc.create_time AS createTime,
+            doc.`status`,
+            appendix_address AS appendixAddress,
+            appendix_name AS appendixName,
+            images_address AS imagesAddress,
+            images_name AS imagesName,
+            r.status AS reviewStatus
+        FROM
+            document doc
+        LEFT JOIN `user` u ON u.id = doc.user_id
+        LEFT JOIN `review` r ON r.doc_id = doc.id
+        LEFT JOIN channel chnl ON chnl.id  = doc.chnl_id
+        WHERE
+          1 = 1
+          <if test="qTitle != null and  qTitle != '' ">
+            AND title LIKE CONCAT('%',CONCAT(#{qTitle},'%'))
+          </if>
+          <if test="qUserName != null and qUserName != '' ">
+            AND u.user_name LIKE CONCAT('%',CONCAT(#{qUserName},'%'))
+          </if>
+        <if test="qChannel != null and qChannel != '' ">
+            AND chnl.id = #{qChannel}
+        </if>
+          <if test="qCreateTime != null and qCreateTime != ''">
+            AND DATE_FORMAT(doc.create_time, '%Y-%m-%d') = #{qCreateTime}
+          </if>
+        <if test="qId != null and qId != ''">
+            AND doc.user_id = #{qId}
+        </if>
+        <if test="qStatus != null and qStatus != ''">
+            AND doc.status = #{qStatus}
+        </if>
+        GROUP BY doc.id
+        ORDER BY doc.create_time DESC
+          <if test="index!=null and limit!=null">
+            LIMIT #{index},#{limit}
+          </if>
+    </select>
+
+    <select id="count" parameterType="java.util.Map" resultType="java.lang.Long" flushCache="true">
+        SELECT COUNT(1) FROM document doc
+        LEFT JOIN `user` u ON u.id = doc.user_id
+        WHERE 1 = 1
+        <if test="qTitle != null and  qTitle != '' ">
+            AND title LIKE CONCAT('%',CONCAT(#{qTitle},'%'))
+        </if>
+        <if test="qOpusUnit != null and qOpusUnit != '' ">
+            AND opus_unit LIKE CONCAT('%',CONCAT(#{qOpusUnit},'%'))
+        </if>
+        <if test="qStatus != null and qStatus != '' ">
+            AND doc.status = #{qStatus}
+        </if>
+        <if test="qCreateTime != null and qCreateTime != ''">
+            AND DATE_FORMAT(create_time, '%Y-%m-%d') = #{qCreateTime}
+        </if>
+        <if test="qId != null and qId != ''">
+            AND doc.user_id = #{qId}
+        </if>
+    </select>
+
+    <select id="getById" resultType="com.eprobj.entity.Documents">
+      SELECT
+        d.id,
+        d.title,
+        d.`status`,
+        chnl.chnl_name AS channel,
+        d.opus_unit AS opusUnit,
+        d.content,
+        d.images_address AS imagesAddress,
+        d.images_name AS imagesName,
+        d.appendix_address AS appendixAddress,
+        d.appendix_name AS appendixName,
+        d.notes,
+        d.create_time AS createTime,
+        d.press_name as pressName,
+        d.publish_time as publishTime,
+        d.edition,
+        d.impression,
+        d.word_num as wordNum,
+        d.page_num as pageNum,
+        d.bind,
+        d.phase,
+        d.price,
+        d.telephone,
+        d.author,
+        u.user_name AS userName,
+        u.email,
+        u.login_name AS loginName,
+        u.telephone as telephoneDoc,
+        d.linkman
+    FROM
+        document d
+    LEFT JOIN user u ON u.id = d.user_id
+    LEFT JOIN channel chnl ON chnl.id = d.chnl_id
+    WHERE d.id = #{id}
+    </select>
+
+    <select id="exportByDocId" resultType="com.eprobj.entity.Documents">
+        SELECT
+        d.id,
+        d.title,
+        d.status,
+        chnl.chnl_name as channel,
+        d.opus_unit AS opusUnit,
+        d.content,
+        d.images_address AS imagesAddress,
+        d.images_name AS imagesName,
+        d.appendix_address AS appendixAddress,
+        d.appendix_name AS appendixName,
+        d.notes,
+        d.create_time AS createTime,
+        u.user_name AS userName,
+        u.email,
+        u.login_name AS loginName,
+        u.telephone,
+        r.`status` AS reviewStatus
+    FROM
+        document d
+    LEFT JOIN user u ON u.id = d.user_id
+        LEFT JOIN review r ON r.doc_id = d.id
+        LEFT JOIN channel chnl ON d.chnl_id = chnl.id
+        <if test="exportType != 'all'">
+        WHERE d.id IN
+            <foreach collection="docIdList" item="item" index="index" open="(" close=")" separator=",">
+                #{item}
+            </foreach>
+        </if>
+        GROUP BY d.id
+    </select>
+
+    <update id="updateByDocId" parameterType="com.eprobj.entity.Documents">
+        update document
+        <set>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="channel != null">
+                channel = #{channel,jdbcType=VARCHAR},
+            </if>
+            <if test="chnlId != null">
+                chnl_id = #{chnlId,jdbcType=BIGINT},
+            </if>
+            <if test="opusUnit != null">
+                opus_unit = #{opusUnit,jdbcType=VARCHAR},
+            </if>
+            <if test="appendixAddress != null">
+                appendix_address = #{appendixAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="appendixName != null">
+                appendix_name = #{appendixName,jdbcType=VARCHAR},
+            </if>
+            <if test="imagesAddress != null">
+                images_address = #{imagesAddress,jdbcType=VARCHAR},
+            </if>
+            <if test="imagesName != null">
+                images_name = #{imagesName,jdbcType=VARCHAR},
+            </if>
+            <if test="notes != null">
+                notes = #{notes,jdbcType=VARCHAR},
+            </if>
+            <if test="userId != null">
+                user_id = #{userId,jdbcType=BIGINT},
+            </if>
+            <if test="status != null">
+                status = #{status,jdbcType=VARCHAR},
+            </if>
+            <if test="createTime != null">
+                create_time = #{createTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="updateTime != null">
+                update_time = #{updateTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="content != null">
+                content = #{content,jdbcType=LONGVARCHAR},
+            </if>
+            <if test="pressName != null">
+                press_name = #{pressName,jdbcType=VARCHAR},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime,jdbcType=VARCHAR},
+            </if>
+            <if test="edition != null">
+                edition = #{edition,jdbcType=VARCHAR},
+            </if>
+            <if test="impression != null">
+                impression = #{impression,jdbcType=VARCHAR},
+            </if>
+            <if test="wordNum != null">
+                word_num = #{wordNum,jdbcType=VARCHAR},
+            </if>
+            <if test="pageNum != null">
+                page_num = #{pageNum,jdbcType=VARCHAR},
+            </if>
+            <if test="bind != null">
+                bind = #{bind,jdbcType=VARCHAR},
+            </if>
+            <if test="phase != null">
+                phase = #{phase,jdbcType=VARCHAR},
+            </if>
+            <if test="price != null">
+                price = #{price,jdbcType=VARCHAR},
+            </if>
+            <if test="telephone != null">
+                telephone = #{telephone,jdbcType=VARCHAR},
+            </if>
+            <if test="author != null">
+                author = #{author,jdbcType=VARCHAR},
+            </if>
+            <if test="linkman != null">
+                linkman = #{linkman,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+
+    <delete id="deleteByIds" parameterType="java.util.List">
+        delete from
+        document
+        where
+        id in
+        <foreach collection="docIds" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <delete id="deleteReviewByIds" parameterType="java.util.List">
+        delete from
+        review
+        where
+        doc_id in
+        <foreach collection="docIds" item="item" index="index" separator="," open="(" close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="findAllChannel" resultType="com.eprobj.entity.Channel">
+        SELECT
+            id AS  id,
+            chnl_name AS chnlName,
+            parent_id AS parentId,
+            create_time AS createTime,
+            update_time AS updateTime
+        FROM
+            channel
+        GROUP BY
+            chnlName
+    </select>
+
+    <select id="findAllReview" resultType="java.lang.String">
+        SELECT
+            COUNT(*) as num
+        FROM
+            document doc
+        WHERE
+            doc.status = 1
+    </select>
+</mapper>

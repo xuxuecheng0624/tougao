@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+  <meta charset="utf-8">
+  <meta name="renderer" content="webkit">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+  <title>中国方志网在线投稿系统</title>
+  <base th:href="${#request.getContextPath()}+'/'">
+  <link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+  <link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+  <link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+</head>
+<body class="layui-layout-body fzwbody2">
+
+    <div class="layui-layout layui-layout-admin">
+      <div class="layui-header gjlb_bg">
+        <div class="gjlb_logo">中国方志网在线投稿系统</div>
+
+        <ul class="layui-nav layui-layout-right">
+          <li class="layui-nav-item gjlb_xian"><span id="time"></span><span id="time2"></span></li>
+          <li class="layui-nav-item gjlb_xian">
+            <!--<a href="javascript:;" th:text="${session.user.loginName}" />-->
+          </li>
+          <li class="layui-nav-item gjlb_xian">
+            <a href="javascript:;" lay-href="toEditPass" lay-tips="修改密码" lay-direction="2">修改密码</a>
+          </li>
+          <li class="layui-nav-item gjlb_xian"  layui-event="logout"><a href="logout" >退出<!--<img src="../layuiadmin/layui/images/htxt_daochu4.png" >--></a></li>
+
+        </ul>
+      </div>
+
+
+      <!-- 侧边菜单 -->
+      <div class="layui-side layui-bg-black zms_temleft">
+        <div class="layui-side-scroll gjlb_si_scr">
+          <ul class="gjlb_nav_tree"  lay-filter="test">
+            <li class="layui-nav-item gjlb_nchui gjlb_active"><a class="gjlb_n_t1"  href="javascript:;" lay-href="doc/toList" lay-tips="稿件列表" lay-direction="2">稿件列表</a>
+              <shiro:hasRole name="管理员">
+                <span id="num" class="layui-badge" style="position: absolute;right: 16px;top: 16px;">0</span>
+              </shiro:hasRole>
+            </li>
+            <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t1"  href="javascript:;" lay-href="doc/toContribute" lay-tips="我要投稿" lay-direction="2">我要投稿</a></li>
+            <shiro:hasRole name="管理员">
+            <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t2" href="javascript:;" lay-href="logtoList" lay-tips="日记记录" lay-direction="2">日志记录</a></li>
+              <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t3" href="javascript:;" lay-href="yonghu" lay-tips="用户管理" lay-direction="2">用户管理</a></li>
+              <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t3" href="javascript:;" lay-href="chnl/toList" lay-tips="用户管理" lay-direction="2">栏目管理</a></li>
+              <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t5" href="javascript:;" lay-href="consulttoList" lay-tips="咨询管理" lay-direction="2">咨询管理</a><span id="t4" class="layui-badge" style="position: absolute;right: 16px;top: 16px;">0</span></li>
+              <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t5" href="javascript:;" lay-href="contribueClickLogtoList" lay-tips="访问管理" lay-direction="2">访问管理</a></li>
+            </shiro:hasRole>
+            <!--<shiro:hasRole name="用户">
+              <li class="layui-nav-item gjlb_nchui"><a class="gjlb_n_t3" href="javascript:;" lay-href="/toEditPass" lay-tips="修改密码" lay-direction="2">修改密码</a></li>
+            </shiro:hasRole>-->
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- 页面标签 -->
+      <div class="layadmin-pagetabs" id="LAY_app_tabs" style="display: none;">
+        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+        <div class="layui-icon layadmin-tabs-control layui-icon-down">
+          <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+            <li class="layui-nav-item" lay-unselect>
+              <a href="javascript:;"></a>
+              <dl class="layui-nav-child layui-anim-fadein">
+                <dd layadmin-event="closeThisTabs"><a href="javascript:;">关闭当前标签页</a></dd>
+                <dd layadmin-event="closeOtherTabs"><a href="javascript:;">关闭其它标签页</a></dd>
+                <dd layadmin-event="closeAllTabs"><a href="javascript:;">关闭全部标签页</a></dd>
+              </dl>
+            </li>
+          </ul>
+        </div>
+        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+          <ul class="layui-tab-title" id="LAY_app_tabsheader">
+            <li lay-id="home/console.html" lay-attr="home/console.html" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+          </ul>
+        </div>
+      </div>
+
+
+      <!-- 主体内容 -->
+      <div class="layui-body" id="LAY_app_body">
+        <div class="layadmin-tabsbody-item layui-show">
+          <iframe th:src="@{/doc/toList}" frameborder="0" class="layadmin-iframe"></iframe>
+        </div>
+      </div>
+
+      <div class="layui-footer gjlb_foot">
+        中国方志网在线投稿系统
+      </div>
+
+      <!-- 辅助元素，一般用于移动设备下遮罩 -->
+      <div class="layadmin-body-shade" layadmin-event="shade"></div>
+    </div>
+
+  <script type="text/javascript" th:src="@{layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+  <script th:src="@{/layuiadmin/layui/layui.js}"></script>
+  <script>
+      const baseUrl = "[[${#servletContext.contextPath}]]";
+  layui.config({
+    base: baseUrl + '/layuiadmin/' //静态资源所在路径
+  }).extend({
+    index: 'lib/index' //主入口模块
+  }).use('index');
+  </script>
+  <script type="text/javascript">
+
+
+      $(function() {
+          var myDate = new Date;
+          var year = myDate.getFullYear(); //获取当前年
+          var mon = myDate.getMonth() + 1; //获取当前月
+          var date = myDate.getDate(); //获取当前日
+          // var h = myDate.getHours();//获取当前小时数(0-23)
+          // var m = myDate.getMinutes();//获取当前分钟数(0-59)
+          // var s = myDate.getSeconds();//获取当前秒
+          mon = (mon<10 ? "0"+mon:mon);
+          date = (date<10 ? "0"+date:date);
+          var week = myDate.getDay();
+          var weeks = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+          console.log(year, mon, date, weeks[week])
+          $("#time").text(year + "-" + mon + "-" + date );
+          $("#time2").text(weeks[week]);
+
+          $(".gjlb_nav_tree li").click(function(){
+            $(this).addClass("gjlb_active").siblings(".gjlb_nav_tree li").removeClass("gjlb_active");
+          });
+          $.ajax({
+              async:false,          //是否异步
+              type:"post",         //请求类型
+              dataType:"json",  //返回的数据类型
+              contentType:"application/json",   //请求的参数类型
+              url: baseUrl + "/queryConsultNoAnswer", //链接地址
+              success:function(data){
+                  if(data.code=="0"){
+                      var info=$("#t4").html();
+                      if(data.data!=0) {
+                          info =  data.data;
+                          $("#t4").html(info);
+                      }
+                  }else{
+                      layer.msg("");
+                  }
+              },error:function(){
+                  alert("进来了error"+data);
+              }
+          })
+
+          $.ajax({
+              async:false,          //是否异步
+              type:"post",         //请求类型
+              dataType:"json",  //返回的数据类型
+              contentType:"application/json",   //请求的参数类型
+              url: baseUrl + "/doc/findReview", //链接地址
+              success:function(data){
+                  if(data.code=="0"){
+                      var info=$("#num").html();
+                      if(data.data!=0) {
+                          info =  data.data;
+                          $("#num").html(info);
+                      }
+                  }else{
+                      layer.msg("");
+                  }
+              },error:function(){
+                  alert("进来了error"+data);
+              }
+          })
+
+      })
+
+    </script>
+
+</body>
+</html>
+
+

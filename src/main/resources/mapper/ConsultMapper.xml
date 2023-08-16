@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eprobj.mapper.ConsultMapper">
+
+    <insert id="addconsult" parameterType="com.eprobj.entity.Consult">
+        INSERT INTO consult (
+        title,
+        name,
+        phone,
+        email,
+        unit,
+        content,
+        status,
+        openstatus,
+        createDate
+        )
+        VALUES
+        (#{title}, #{name}, #{phone}, #{email}, #{unit}, #{content},#{status},#{openstatus},#{createDate})
+    </insert>
+
+    <update id="consultAndAnswer" parameterType="com.eprobj.entity.Consult">
+        update consult
+        set
+        answer = #{answer},
+        answerCreateDate=#{answerCreateDate},
+        status=#{status}
+        WHERE  id =#{id}
+
+    </update>
+    <update id="updateConsultOpenStatus" parameterType="com.eprobj.entity.Consult">
+        update consult
+        set
+        openstatus=#{openstatus}
+        WHERE  id =#{id}
+    </update>
+
+    <update id="deleteConsult" parameterType="com.eprobj.entity.Consult">
+        update consult
+        set
+        openstatus=#{openstatus},
+        status=#{status}
+        WHERE  id =#{id}
+    </update>
+
+    <select id="queryConsult" resultType="com.eprobj.entity.Consult">
+        SELECT
+        id,
+        title,
+        name,
+        phone,
+        email,
+        unit,
+        content,
+        createDate,
+        answerCreateDate,
+        answer,
+        status,
+        openstatus,
+        examine
+
+        FROM
+        consult
+        WHERE id=#{id}
+    </select>
+    <select id="consultlist" parameterType="java.util.Map" resultType="com.eprobj.entity.Consult">
+        SELECT
+        id,
+        title,
+        name,
+        phone,
+        email,
+        unit,
+        content,
+        createDate,
+        answerCreateDate,
+        answer,
+        status,
+        openstatus,
+        examine
+        FROM
+        consult
+
+        WHERE
+        <if test="name != null and name != ''">
+              and (name=#{name} OR   title LIKE '%${title}%')
+        </if>
+        <if test="openstatus == 2">
+            openstatus  = 2
+        </if>
+        <if test="openstatus != 2">
+            openstatus  != 2
+        </if>
+        <if test="field != null and field != ''">
+            ORDER BY  ${field} ${order}
+        </if>
+        limit #{page},#{limit}
+    </select>
+    <select id="webconsultlist" resultType="com.eprobj.entity.Consult">
+        SELECT
+        id,
+        title,
+        name,
+        phone,
+        email,
+        unit,
+        content,
+        createDate,
+        answerCreateDate,
+        answer,
+        status,
+        openstatus,
+        examine
+        FROM
+        consult
+        WHERE openstatus=#{openstatus}
+        ORDER BY createDate DESC
+        limit #{status},#{examine}
+    </select>
+
+    <select id="consultlistCount" parameterType="java.util.Map" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        consult
+
+        WHERE
+        <if test="name != null and name != ''">
+            and (name=#{name} OR   title LIKE '%${title}%')
+        </if>
+        <if test="openstatus == 2">
+            openstatus  = 2
+        </if>
+        <if test="openstatus != 2">
+            openstatus  != 2
+        </if>
+    </select>
+
+    <select id="webconsultlistCount" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        consult
+        WHERE openstatus=#{openstatus}
+    </select>
+
+    <select id="queryConsultNoAnswer" resultType="java.lang.Integer">
+        SELECT
+        count(1)
+        FROM
+        consult
+        WHERE status=0
+    </select>
+
+
+</mapper>

@@ -1,0 +1,96 @@
+{
+	"code": 0,
+	"msg": "",
+	"count": 1000,
+	"data": [{
+		"id": 10000,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}, {
+		"id": 10001,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "0"
+	}, {
+		"id": 10002,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}, {
+		"id": 10003,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "0"
+	}, {
+		"id": 10004,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}, {
+		"id": 10005,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}, {
+		"id": 10006,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "0"
+	}, {
+		"id": 10007,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}, {
+		"id": 10008,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "0"
+	}, {
+		"id": 10009,
+		"chaUrl": "http://www.baidu.com",
+		"leixing": "信息",
+		"duixiang": "",
+		"czleixing": "",
+		"czyonghu": "黎锦熙",
+		"cztime": "19-07-31 13:29:39",
+		"czjieguo": "1"
+	}]
+}

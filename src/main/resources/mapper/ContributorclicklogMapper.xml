@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.eprobj.mapper.ContributorclicklogMapper">
+
+    <insert id="insertContribueClickLog" parameterType="com.eprobj.entity.Contributorclicklog">
+        INSERT INTO contributorclicklog (
+        cid,
+        ctitle,
+        cchannel,
+        logchannel,
+        watchnum
+        )
+        VALUES
+        (#{cid}, #{ctitle}, #{cchannel}, #{logchannel},#{watchnum})
+    </insert>
+    <update id="updateContribueClickLog" parameterType="com.eprobj.entity.Contributorclicklog">
+        UPDATE  contributorclicklog
+        SET  watchnum=#{watchnum}
+        WHERE  cid = #{cid}
+    </update>
+    <select id="queryContribueClickLog" resultType="com.eprobj.entity.Contributorclicklog">
+        SELECT
+        *
+        FROM
+        contributorclicklog
+        WHERE
+        cid = #{cid}
+    </select>
+
+    <select id="contribueClickLogList" parameterType="java.util.Map" resultType="com.eprobj.entity.Contributorclicklog">
+        SELECT
+        *
+        FROM
+        contributorclicklog
+        WHERE
+        1 = 1
+        <if test="ctitle != null and  ctitle != '' ">
+            AND ctitle LIKE CONCAT('%',CONCAT(#{ctitle},'%'))
+        </if>
+        <if test="cchannel != null and cchannel != '' ">
+            OR cchannel LIKE CONCAT('%',CONCAT(#{cchannel},'%'))
+        </if>
+        <if test="field != null and field != ''">
+            ORDER BY  ${field} ${order}
+        </if>
+        LIMIT #{page},#{limit}
+    </select>
+
+    <select id="contribueClickLogListCount" parameterType="java.util.Map"  resultType="java.lang.Integer">
+        SELECT
+        COUNT(1)
+        FROM
+        contributorclicklog
+        WHERE
+        1 = 1
+        <if test="ctitle != null and  ctitle != '' ">
+            AND ctitle LIKE CONCAT('%',CONCAT(#{ctitle},'%'))
+        </if>
+        <if test="cchannel != null and cchannel != '' ">
+            OR cchannel LIKE CONCAT('%',CONCAT(#{cchannel},'%'))
+        </if>
+    </select>
+
+
+
+
+
+
+
+    <insert id="insertWatchipclass" parameterType="com.eprobj.entity.Watchipclass">
+        INSERT INTO watchipclass (
+        cid,
+        watchtime,
+        watchip
+        )
+        VALUES
+        (#{cid}, #{watchtime}, #{watchip})
+    </insert>
+    <select id="queryWatchipclass" resultType="com.eprobj.entity.Watchipclass">
+        SELECT
+        *
+        FROM
+        watchipclass
+        WHERE
+        cid = #{cid}
+        AND  watchip = #{ip}
+        ORDER BY watchtime DESC limit 1
+    </select>
+
+</mapper>

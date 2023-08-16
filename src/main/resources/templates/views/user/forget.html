@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>修改密码</title>
+		<base th:href="${#request.getContextPath()}+'/'">
+	<link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+
+	
+</head>
+	<body class="zms_body">
+
+		<div class="fzIndexBox">
+		   <div class="logoBox">
+				<a class="logoA" href="">
+					<img th:src="@{/layuiadmin/layui/images/fz2019Index1200_03.png}" alt="" />
+				</a>
+			</div>
+
+	    </div>
+
+	    <div class="zxtgxt_wai">
+				<div class="zzf_tjbito newpaddbotm">在线投稿系统</div>
+				<div class="zhmimalab">找回密码，<span>请联系管理员</span></div>
+				<div class="zxtgxt_login ztln_bg2">
+					<form class="layui-form" action="" id="form">
+						<ul>
+							<li class="zxtgxt_dltitle">重置密码</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao" >邮    箱</label>
+									<div class="layui-input-block">
+										<input type="text" id="email" name="email" lay-verify="email" autocomplete="off" placeholder="请输入邮箱" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">验证码</label>
+									<div class="layui-input-block">
+										<input style="width: 210px;float: left;margin-left: 14px;" type="text" name="code" lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input zxtgxt_input">
+										<div style="height: 44px;float: left;margin-left: 15px;line-height: 44px;font-size: 16px;" class="layui-btn layui-btn-sm layui-btn-primary" id="mail">点击获取验证码</div>
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">密码</label>
+									<div class="layui-input-block">
+										<input type="password" name="newpassword" lay-verify="newpass" autocomplete="off" placeholder="请输入新密码" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">确认密码</label>
+									<div class="layui-input-block">
+										<input type="password" name="quepassword" lay-verify="quepass" autocomplete="off" placeholder="请确认新密码" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem"><button style="margin-top: 0" class="layui-btn zxtgxt_submit" lay-submit="" lay-filter="demo1">确定</button></li>
+						</ul>
+					</form>
+				</div>
+
+				<div class="zzf_copy">京ICP备08002157-2 中国地方志指导小组办公室主办 Copyright © 2008 192.168.74.137:7001/tougao  京公网安备 11010502035272号</div>
+			</div>	
+
+	<script type="text/javascript" th:src="@{/layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+	<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+	<script>
+		layui.use(['form', 'layedit', 'laydate'], function(){
+		  var $ = layui.$
+			  ,form = layui.form
+		  ,layer = layui.layer
+		  ,layedit = layui.layedit
+		  ,laydate = layui.laydate;
+
+            const baseUrl = "[[${#servletContext.contextPath}]]";
+		  //日期
+		  laydate.render({
+		    elem: '#date'
+		  });
+		  laydate.render({
+		    elem: '#date1'
+		  });
+		  $("#mail").click(function () {
+              var timer = null;
+              var count = 60;
+              var codeText = $('#mail').text();
+              var email = $("#email").val();
+              if (codeText === '点击获取验证码') {
+                  timer = setInterval(function(){
+                      count--;
+                      $('#mail').text(count+'后获取验证码');
+                      if (count <=0) {
+                          clearInterval(timer);
+                          $('#mail').text('点击获取验证码');
+                      }
+                  },1000);
+              }
+              if (email != null && email !== "") {
+                  $.ajax({
+                      type: "post",         //请求类型
+                      dataType: "json",  //返回的数据类型
+                      url: baseUrl + "/forget/getMailCode",                    //链接地址
+                      data: {
+                          "email": $("#email").val()
+                      },
+                      success: function (data) {
+                          layer.msg(data.msg, {icon: 7});
+                      }, error: function (XMLHttpRequest, textStatus, errorThrown) {
+                          layer.alert('用户信息保存失败：' + textStatus, {icon: 2});
+                          $("#form")[0].reset();
+                      }
+                  })
+              } else {
+                  layer.msg("请输入邮箱", {icon: 7});
+			  }
+			  return false
+          })
+		  //创建一个编辑器
+		  var editIndex = layedit.build('LAY_demo_editor');
+		 
+		  //自定义验证规则
+		  form.verify({
+		    title: function(value){
+		      if(value.length < 5){
+		        return '标题至少得5个字符啊';
+		      }
+		    }
+		    ,code: function (value) {
+				  if(value === ""){
+				      return "请输入验证码";
+				  }
+              }
+		    ,newpass: [
+		      /^[\S]{8,20}$/
+		      ,'密码必须8到20位，且不能出现空格'
+		    ]
+		    ,quepass: function(value){
+                  if($('input[name=newpassword]').val() !== value)
+                      return '两次密码输入不一致！';
+              }
+		    ,content: function(value){
+		      layedit.sync(editIndex);
+		    }
+		  });
+		  
+		  //监听指定开关
+		  form.on('switch(switchTest)', function(data){
+		    layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+		      offset: '6px'
+		    });
+		    layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+		  });
+		  
+		  //监听提交
+		  form.on('submit(demo1)', function(data){
+		    /*layer.alert(JSON.stringify(data.field), {
+		      title: '最终的提交信息'
+		    })*/
+              $.ajax({
+                  async:false,          //是否异步
+                  type:"post",         //请求类型
+                  dataType:"json",  //返回的数据类型
+                  contentType:"application/json",   //请求的参数类型
+                  url: baseUrl + "/forget",                    //链接地址
+                  data:JSON.stringify(data.field),
+                  success:function(data){
+                      if(data.code=="0"){
+                          layer.alert('用户信息保存成功！', {icon: 1}, function(index){
+                              window.location.href="/login";
+                              return true;
+                          });
+                      }else{
+                          layer.alert('用户信息保存失败：'+data.msg, {icon: 2});
+                          $("#form")[0].reset();
+                      }
+                  },error:function(XMLHttpRequest,textStatus,errorThrown){
+                      layer.alert('用户信息保存失败：'+textStatus, {icon: 2});
+                      $("#form")[0].reset();
+                  }
+              })
+		    return false;
+		  });
+		 
+		  //表单初始赋值
+		  form.val('example', {
+		    "username": "贤心" // "name": "value"
+		    ,"password": "123456"
+		    ,"interest": 1
+		    ,"like[write]": true //复选框选中状态
+		    ,"close": true //开关状态
+		    ,"sex": "女"
+		    ,"desc": "我爱 layui"
+		  })
+		  
+		  
+		});
+		</script>
+
+	</body>
+</html>

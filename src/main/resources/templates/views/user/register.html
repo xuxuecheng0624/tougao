@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="UTF-8">
+	<title>注册</title>
+		<base th:href="${#request.getContextPath()}+'/'">
+	<link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+
+	
+</head>
+	<style>
+		.fzIndexBox {
+			overflow: unset !important;
+		}
+		.zxtgxt_input {
+			width: 600px !important;
+		}
+	</style>
+	<body class="zms_body">
+
+		<div class="fzIndexBox">
+		   <div class="logoBox">
+				<a class="logoA" href="">
+					<img th:src="@{/layuiadmin/layui/images/fz2019Index1200_03.png}" alt="" />
+				</a>
+			</div>
+
+			<div class="zxtgxt_wai2">
+				<div class="zzf_tjbito newpaddbotm">在线投稿系统</div>
+				<div class="zhmimalab2">已有帐号<a href="login">马上登录</a></div>
+				<div class="zxtgxt_login ztln_bg3">
+					<form class="layui-form" action="/login" method="post">
+						<ul>
+							<li class="zxtgxt_dltitle">注册</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao" >邮    箱</label>
+									<div class="layui-input-block">
+										<input type="text" id="email" name="email" lay-verify="email" autocomplete="off" placeholder="请输入邮箱" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">验证码</label>
+									<div class="layui-input-block">
+										<input style="width: 435px !important;margin-left: 19px;float: left" type="text" name="code" lay-verify="code" autocomplete="off" placeholder="请输入验证码" class="layui-input zxtgxt_input">
+										<div style="float: left; margin-left: 20px;height: 44px;line-height: 44px;font-size: 18px" class="layui-btn layui-btn-sm layui-btn-primary" id="mail">点击获取验证码</div>
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">用户名</label>
+									<div class="layui-input-block">
+										<input type="text" name="loginName" lay-verify="loginName" autocomplete="off" placeholder="请输入用户名" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">密码</label>
+									<div class="layui-input-block">
+										<input type="password" name="password" lay-verify="pass" autocomplete="off" placeholder="请输入密码" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">确认密码</label>
+									<div class="layui-input-block">
+										<input type="password" name="newpassword" lay-verify="newpass" autocomplete="off" placeholder="请确认密码" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label">真实姓名</label>
+									<div class="layui-input-block">
+										<input type="text" name="userName" lay-verify="title" autocomplete="off" placeholder="请输入真实姓名" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label bb_xinhao">手机号</label>
+									<div class="layui-input-block">
+										<input type="text" name="telephone" lay-verify="required|phone" autocomplete="off" placeholder="请输入手机" class="layui-input zxtgxt_input">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item">
+									<label class="layui-form-label">地址</label>
+									<div class="layui-input-block">
+										<input type="text" name="address" lay-verify="adress" autocomplete="off" placeholder="请输入真实地址" class="layui-input zxtgxt_input3">
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem">
+								<div class="layui-form-item layui-form-text">
+									<label class="layui-form-label">备注</label>
+									<div class="layui-input-block">
+										<textarea  name ="note" placeholder="请输入备注" class="layui-textarea  fzwlv_tex"></textarea>
+									</div>
+								</div>
+							</li>
+							<li class="zxtgxt_tem"><button class="layui-btn zxtgxt_submit" lay-submit="" lay-filter="demo1">注册</button></li>
+						</ul>
+					</form>
+				</div>
+
+				<div class="zzf_copy">京ICP备08002157-2 中国地方志指导小组办公室主办 Copyright © 2008 www.difangzhi.cn  京公网安备 11010502035272号</div>
+		</div>
+
+	    </div>
+
+	    	
+
+	<script type="text/javascript" th:src="@{/layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+	<script th:src="@{/layuiadmin/layui/layui.js}"></script>
+	<script>
+		layui.use(['form', 'layedit', 'laydate'], function(){
+		  var form = layui.form
+		  ,layer = layui.layer
+		  ,layedit = layui.layedit
+		  ,laydate = layui.laydate;
+
+            const baseUrl = "[[${#servletContext.contextPath}]]";
+		  //日期
+		  laydate.render({
+		    elem: '#date'
+		  });
+		  laydate.render({
+		    elem: '#date1'
+		  });
+		  
+		  //创建一个编辑器
+		  var editIndex = layedit.build('LAY_demo_editor');
+		 
+		  //自定义验证规则
+		  form.verify({
+		    loginName: function(value){
+		      if(value === ""){
+		        return '用户名不能为空';
+		      }
+		    }
+		    ,pass: [
+		      /^[\S]{8,20}$/
+		      ,'密码必须8到20位，且不能出现空格'
+		    ]
+              ,code: function (value) {
+                  if(value === ""){
+                      return "请输入验证码";
+                  }
+              }
+		    ,newpass: function(value){
+                  if($('input[name=password]').val() !== value)
+                      return '两次密码输入不一致！';
+              }
+		    ,quepass: [
+		      /^[\S]{6,12}$/
+		      ,'密码必须6到12位，且不能出现空格'
+		    ]
+		    ,content: function(value){
+		      layedit.sync(editIndex);
+		    }
+		  });
+
+            $("#mail").click(function () {
+                var timer = null;
+                var count = 60;
+                var codeText = $('#mail').text();
+                var email = $("#email").val();
+                if (codeText === '点击获取验证码') {
+                    timer = setInterval(function(){
+                        count--;
+                        $('#mail').text(count+'后获取验证码');
+                        if (count <=0) {
+                            clearInterval(timer);
+                            $('#mail').text('点击 获取验证码');
+                        }
+                    },1000);
+                }
+                if (email != null && email !== "") {
+					$.ajax({
+						type:"post",         //请求类型
+						dataType:"json",  //返回的数据类型
+						url:baseUrl + "/email/prov",                    //链接地址
+						data:{
+							"email":$("#email").val(),
+							"type": "register"
+						},
+						success:function(data){
+							layer.msg(data.msg,{icon:7});
+						},error:function(XMLHttpRequest,textStatus,errorThrown){
+							layer.alert('邮件发送失败：'+textStatus, {icon: 2});
+							$("#form")[0].reset();
+						}
+					})
+                } else {
+                    layer.msg("请输入邮箱",{icon:7});
+				}
+                return false
+            })
+
+		  //监听指定开关
+		  form.on('switch(switchTest)', function(data){
+		    layer.msg('开关checked：'+ (this.checked ? 'true' : 'false'), {
+		      offset: '6px'
+		    });
+		    layer.tips('温馨提示：请注意开关状态的文字可以随意定义，而不仅仅是ON|OFF', data.othis)
+		  });
+            //监听提交
+            form.on('submit(demo1)', function(data){
+//            layer.alert(JSON.stringify(data.field), {
+//                title: '最终的提交信息'
+//            })
+                $.ajax({
+                    async:false,          //是否异步
+                    type:"post",         //请求类型
+                    dataType:"json",  //返回的数据类型
+                    contentType:"application/json",   //请求的参数类型
+                    url:baseUrl + "/registeruser",                    //链接地址
+                    data:JSON.stringify(data.field),
+                    success:function(data){
+                        if(data.code=="0"){
+                            layer.msg(data.msg, { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+                            window.location.href = baseUrl +  "/login";
+                            return true;
+                        }else{
+                            layer.msg(data.msg, { icon: 7, time: 1000, shade: [0.6, '#000', true] });
+
+                        }
+                    },error:function(){
+                        alert("进来了error"+data);
+                    }
+                })
+
+
+				 return false;
+            });
+		 
+		  //表单初始赋值
+		  form.val('example', {
+		    "username": "贤心" // "name": "value"
+		    ,"password": "123456"
+		    ,"interest": 1
+		    ,"like[write]": true //复选框选中状态
+		    ,"close": true //开关状态
+		    ,"sex": "女"
+		    ,"desc": "我爱 layui"
+		  })
+		  
+		  
+		});
+		</script>
+
+	</body>
+</html>

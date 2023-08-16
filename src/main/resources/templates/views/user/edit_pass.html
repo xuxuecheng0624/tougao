@@ -1,0 +1,147 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>查看</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+	<base th:href="${#request.getContextPath()}+'/'">
+	<link rel="stylesheet" href="layuiadmin/layui/css/layui.css" media="all">
+	<link rel="stylesheet" href="layuiadmin/style/admin.css" media="all">
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fzBase_v2109.css" media="all"/>
+	<link rel="stylesheet" type="text/css" href="layuiadmin/layui/css/fz_cj_houtaixitong.css" media="all"/>
+	<script th:src="@{ueditor/ueditor.config.js}"></script>
+	<script th:src="@{ueditor/ueditor.all.min.js}"></script>
+	<script th:src="@{ueditor/lang/zh-cn/zh-cn.js}"></script>
+</head>
+<body>
+
+<div class="layui-fluid">
+	<div class="layui-card" style="background-color: transparent;">
+		<div class="gjlb_tit_top"><span>修改密码</span></div>
+
+		<form class="zxtgxt_login ztln_bg2 layui-form" style="padding: 15px;" id="form">
+			<ul>
+				<li class="zxtgxt_dltitle">修改密码</li>
+
+				<li class="zxtgxt_tem">
+					<div class="layui-form-item">
+						<label class="layui-form-label">原密码</label>
+						<div class="layui-input-block">
+							<input type="password" name="password" lay-verify="password" autocomplete="off" placeholder="请输入原密码" class="layui-input zxtgxt_input">
+						</div>
+					</div>
+				</li>
+				<li class="zxtgxt_tem">
+					<div class="layui-form-item">
+						<label class="layui-form-label">新密码</label>
+						<div class="layui-input-block">
+							<input type="password" name="newpassword" lay-verify="newpass" autocomplete="off" placeholder="请输入新密码" class="layui-input zxtgxt_input">
+						</div>
+					</div>
+				</li>
+				<li class="zxtgxt_tem">
+					<div class="layui-form-item">
+						<label class="layui-form-label">确认新密码</label>
+						<div class="layui-input-block">
+							<input type="password" name="quepassword" lay-verify="quepass" autocomplete="off" placeholder="请确认确认新密码" class="layui-input zxtgxt_input">
+						</div>
+					</div>
+				</li>
+				<li class="zxtgxt_tem"><button class="layui-btn zxtgxt_submit" lay-submit="" lay-filter="demo1">确定</button></li>
+			</ul>
+		</form>
+	</div>
+</div>
+
+<script type="text/javascript" th:src="@{layuiadmin/layui/jquery-1.12.4.min_v2019.js}"></script>
+<script th:src="@{layuiadmin/layui/layui.js}"></script>
+<script>
+    const baseUrl = "[[${#servletContext.contextPath}]]";
+    layui.config({
+        base: baseUrl + '/layuiadmin/' //静态资源所在路径
+    }).extend({
+        index: 'lib/index' //主入口模块
+    }).use(['index', 'form', 'laydate','upload','layedit'], function(){
+        var $ = layui.$
+            ,admin = layui.admin
+            ,element = layui.element
+            ,layer = layui.layer
+            ,laydate = layui.laydate
+            ,form = layui.form
+            ,upload = layui.upload
+            ,layedit = layui.layedit;
+
+
+        form.render(null, 'component-form-group');
+
+        laydate.render({
+            elem: '#LAY-component-form-group-date'
+        });
+
+        /* 自定义验证规则 */
+        form.verify({
+            title: function(value){
+                if(value.length < 5){
+                    return '标题至少得5个字符啊';
+                }
+            }
+            ,password: function (value) {
+                if(value === ""){
+                    return "请输入原密码";
+                }
+            }
+            ,newpass: [
+                /^[\S]{8,20}$/
+                ,'密码必须8到20位，且不能出现空格'
+            ]
+            ,quepass: function(value){
+                if($('input[name=newpassword]').val() !== value)
+                    return '两次密码输入不一致！';
+            }
+            ,content: function(value){
+                layedit.sync(editIndex);
+            }
+        });
+
+        //监听提交
+        form.on('submit(demo1)', function(data){
+            /*layer.alert(JSON.stringify(data.field), {
+              title: '最终的提交信息'
+            })*/
+            $.ajax({
+                async:false,          //是否异步
+                type:"post",         //请求类型
+                dataType:"json",  //返回的数据类型
+                contentType:"application/json",   //请求的参数类型
+                url: baseUrl + "/update/password",                    //链接地址
+                data:JSON.stringify(data.field),
+                success:function(data){
+                    if(data.code=="0"){
+                        layer.msg("密码修改成功，下次登录生效",{icon:1})
+                        $("#form")[0].reset();
+                    }else{
+                        layer.alert('用户信息保存失败：'+data.msg, {icon: 2});
+                        $("#form")[0].reset();
+                    }
+                },error:function(XMLHttpRequest,textStatus,errorThrown){
+                    layer.alert('用户信息保存失败：'+textStatus, {icon: 2});
+                    $("#form")[0].reset();
+                }
+            })
+            return false;
+        });
+
+    });
+</script>
+<script type="text/javascript">
+    $(".new_quxiao").click(function(){
+        $(".new_yongchong").hide();
+    });
+</script>
+
+</body>
+</html>
